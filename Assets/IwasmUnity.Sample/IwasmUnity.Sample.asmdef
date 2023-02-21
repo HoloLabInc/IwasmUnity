@@ -1,0 +1,16 @@
+{
+    "name": "IwasmUnity.Sample",
+    "rootNamespace": "IwasmUnity.Sample",
+    "references": [
+        "GUID:18ef24067f7c8a84582fda8bb727a195"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
