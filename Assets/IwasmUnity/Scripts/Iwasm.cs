@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System;
+using System.Diagnostics;
 using System.Text;
 
 namespace IwasmUnity
@@ -14,6 +15,7 @@ namespace IwasmUnity
             return end;
         }
 
+        [Conditional("IWASM_WITH_WASI")]
         public static void WasmRuntimeSetWasiArgs(Module module, string[] envs, string[] args)
         {
             // TODO: Dispose them when the module is disposed. Or they are leaked.
@@ -21,6 +23,7 @@ namespace IwasmUnity
             var envsNative = new RawStringArray(envs);
             var argsNative = new RawStringArray(args);
 
+#if IWASM_WITH_WASI
             wasm_runtime_set_wasi_args_ex(
                 module: module.ModuleNative,
                 dir_list: null,
@@ -34,6 +37,7 @@ namespace IwasmUnity
                 stdinfd: -1,
                 stdoutfd: -1,
                 stderrfd: -1);
+#endif
         }
 
         public static void WasmRuntimeCallWasm(

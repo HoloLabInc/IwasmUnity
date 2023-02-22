@@ -43,6 +43,7 @@ namespace IwasmUnity
         [DllImport(DllName, CallingConvention = Cdecl)]
         public static extern void wasm_runtime_unload(wasm_module_t module);
 
+#if IWASM_WITH_WASI
         [DllImport(DllName, CallingConvention = Cdecl)]
         private static extern void wasm_runtime_set_wasi_args_ex(
             wasm_module_t module,
@@ -57,6 +58,7 @@ namespace IwasmUnity
             int stdinfd,
             int stdoutfd,
             int stderrfd);
+#endif
 
         [DllImport(DllName, CallingConvention = Cdecl)]
         public static extern wasm_module_inst_t wasm_runtime_instantiate(
@@ -79,8 +81,10 @@ namespace IwasmUnity
         [DllImport(DllName, CallingConvention = Cdecl)]
         public static extern wasm_exec_env_t wasm_runtime_get_exec_env_singleton(wasm_module_inst_t module_inst);
 
+#if IWASM_WITH_WASI
         [DllImport(DllName, CallingConvention = Cdecl)]
         public static extern wasm_function_inst_t wasm_runtime_lookup_wasi_start_function(wasm_module_inst_t module_inst);
+#endif
 
         [DllImport(DllName, CallingConvention = Cdecl)]
         public static extern bool wasm_runtime_register_natives(

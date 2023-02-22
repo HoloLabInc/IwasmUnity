@@ -1,1 +1,0 @@
-set (WAMR_BUILD_AOT 0)

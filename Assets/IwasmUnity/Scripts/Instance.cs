@@ -56,12 +56,14 @@ namespace IwasmUnity
             }
         }
 
+#if IWASM_WITH_WASI
         public void RunWasiStartFunction()
         {
             ThrowIfDisposed();
             var func = Iwasm.wasm_runtime_lookup_wasi_start_function(_instance);
             Iwasm.WasmRuntimeCallWasm(this, func, 0, null, 0, null);
         }
+#endif
 
         public Function FindFunction(string name)
         {

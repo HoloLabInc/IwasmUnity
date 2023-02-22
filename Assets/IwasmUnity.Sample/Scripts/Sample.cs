@@ -32,7 +32,7 @@ namespace IwasmUnity.Sample
                 return;
             }
 
-            var runSample1 = true;
+            var runSample1 = false;
 
             if (runSample1)
             {
@@ -61,7 +61,16 @@ namespace IwasmUnity.Sample
             }
             _text.text = "start wasi main function...";
             Debug.Log("start wasi main function...");
-            _instance.RunWasiStartFunction();
+            var wasiMain = _instance.FindFunction("_start").ToAction();
+            try
+            {
+                wasiMain();
+            }
+            catch (Exception ex)
+            {
+                _text.text = ex.Message;
+                throw;
+            }
             _text.text = "end wasi main function";
             Debug.Log("end wasi main function");
         }
