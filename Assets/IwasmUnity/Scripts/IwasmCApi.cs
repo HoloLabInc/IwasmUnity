@@ -9,6 +9,14 @@ using size_t = System.UIntPtr;
 
 namespace IwasmUnity
 {
+    public static class Hello
+    {
+        public static void RunSample(byte[] wasm)
+        {
+            IwasmCApi.Sample(wasm);
+        }
+    }
+
     internal unsafe static class IwasmCApi
     {
         private const CallingConvention Cdecl = CallingConvention.Cdecl;
@@ -142,7 +150,7 @@ namespace IwasmUnity
             return wasm_trap_t_ptr.Null;
         }
 
-        private static void Sample(byte[] wasm)
+        public static void Sample(byte[] wasm)
         {
             // see https://github.com/bytecodealliance/wasm-micro-runtime/blob/9f0c4b63ac21c975aee7aae30236e306c8e49d13/samples/wasm-c-api/src/hello.c
 
