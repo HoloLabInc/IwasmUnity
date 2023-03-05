@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using uint8_t = System.Byte;
 using uint32_t = System.UInt32;
 using size_t = System.UIntPtr;
+using System.Text;
 
 namespace IwasmUnity
 {
@@ -109,6 +110,14 @@ namespace IwasmUnity
         [DllImport(Iwasm.DllName, CallingConvention = Cdecl)]
         private static extern void wasm_trap_delete(wasm_trap_t_ptr trap);
 
+        [DllImport(Iwasm.DllName, CallingConvention = Cdecl)]
+        private static extern uint8_t wasm_index_of_func_export(wasm_instance_t_ptr inst, byte* name, uint32_t* out_index);
+
+        [DllImport(Iwasm.DllName, CallingConvention = Cdecl)]
+        private static extern uint8_t wasm_index_of_func_import(wasm_module_t_ptr module, byte* module_name, byte* name, uint32_t* out_index);
+
+        [DllImport(Iwasm.DllName, CallingConvention = Cdecl)]
+        private static extern uint8_t wasm_count_of_func_import(wasm_module_t_ptr module, uint32_t* out_count);
 
         static wasm_functype_t_ptr wasm_functype_new_0_0()
         {
@@ -148,6 +157,23 @@ namespace IwasmUnity
         {
             UnityEngine.Debug.Log("hello !!");
             return wasm_trap_t_ptr.Null;
+        }
+
+        private static uint32_t GetImportIndex(wasm_module_t_ptr module, string moduleName, string funcName)
+        {
+            var moduleNameUtf8 = Encoding.UTF8.GetBytes(moduleName);
+            var funcNameUtf8 = Encoding.UTF8.GetBytes(funcName);
+
+            fixed (byte* m = moduleNameUtf8)
+            fixed (byte* fn = funcNameUtf8)
+            {
+                uint32_t index = 0;
+                if (wasm_index_of_func_import(module, m, fn, &index) == 0)
+                {
+                    throw new Exception("import func not found");
+                }
+                return index;
+            }
         }
 
         public static void Sample(byte[] wasm)
@@ -201,20 +227,42 @@ namespace IwasmUnity
                             wasm_functype_delete(hello_type);
                         }
 
-                        const int ExternsCount = 1;
-                        var externs = stackalloc wasm_extern_t_ptr[ExternsCount]
-                        {
-                            wasm_func_as_extern(hello_func),
-                        };
+                        //const int ExternsCount = 1;
+                        //var externs = stackalloc wasm_extern_t_ptr[ExternsCount]
+                        //{
+                        //    wasm_func_as_extern(hello_func),
+                        //};
+                        //wasm_extern_vec_t imports = new wasm_extern_vec_t(
+                        //    new size_t((uint)sizeof(wasm_extern_t_ptr) * ExternsCount),
+                        //    externs,
+                        //    new size_t((uint)ExternsCount),
+                        //    new size_t((uint)sizeof(wasm_extern_t_ptr)),
+                        //    null);
+                        //var instance = wasm_instance_new(store, module, &imports, null);
 
-                        wasm_extern_vec_t imports = new wasm_extern_vec_t(
-                            new size_t((uint)sizeof(wasm_extern_t_ptr) * ExternsCount),
+                        uint32_t importCount = 0;
+                        if (wasm_count_of_func_import(module, &importCount) == 0)
+                        {
+                            throw new Exception("failed to get count of imported funcs");
+                        }
+                        var externArray = new wasm_extern_t_ptr[importCount];
+                        externArray[GetImportIndex(module, "\0", "hello\0")] = wasm_func_as_extern(hello_func);
+
+                        wasm_extern_vec_t imports;
+                        fixed (wasm_extern_t_ptr* externs = externArray)
+                        {
+                            imports = new wasm_extern_vec_t(
+                            new size_t((uint)sizeof(wasm_extern_t_ptr) * importCount),
                             externs,
-                            new size_t((uint)ExternsCount),
+                            new size_t(importCount),
                             new size_t((uint)sizeof(wasm_extern_t_ptr)),
                             null);
+                        }
 
                         var instance = wasm_instance_new(store, module, &imports, null);
+
+
+
                         try
                         {
                             wasm_extern_vec_t exports;
@@ -222,7 +270,16 @@ namespace IwasmUnity
                             try
                             {
                                 wasm_instance_exports(instance, &exports);
-                                func = wasm_extern_as_func(exports.data[0]);
+
+                                fixed (byte* name = Encoding.ASCII.GetBytes("run\0"))
+                                {
+                                    uint32_t index;
+                                    if (wasm_index_of_func_export(instance, name, &index) == 0)
+                                    {
+                                        throw new Exception("not found");
+                                    }
+                                    func = wasm_extern_as_func(exports.data[index]);
+                                }
 
                                 wasm_val_vec_t args = wasm_val_vec_t.Empty;
                                 wasm_val_vec_t results = wasm_val_vec_t.Empty;
