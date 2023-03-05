@@ -27,7 +27,13 @@ namespace IwasmUnity.Sample
 
         private void Start()
         {
-            StartCoroutine(LoadStreamingAssets("hello.wasm", wasm => Hello.RunSample(wasm)));
+            StartCoroutine(LoadStreamingAssets("hello.wasm", wasm =>
+            {
+                Hello.RunSample(wasm, () =>
+                {
+                    _text.text = "hello !!";
+                });
+            }));
 
             return;
 

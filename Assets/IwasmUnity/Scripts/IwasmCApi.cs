@@ -12,10 +12,13 @@ namespace IwasmUnity
 {
     public static class Hello
     {
-        public static void RunSample(byte[] wasm)
+        public static void RunSample(byte[] wasm, Action action)
         {
+            SampleAction = action;
             IwasmCApi.Sample(wasm);
         }
+
+        public static Action? SampleAction { get; private set; }
     }
 
     internal unsafe static class IwasmCApi
@@ -156,6 +159,14 @@ namespace IwasmUnity
         private static wasm_trap_t_ptr HelloCallback(wasm_val_vec_t* args, wasm_val_vec_t* results)
         {
             UnityEngine.Debug.Log("hello !!");
+            try
+            {
+                Hello.SampleAction?.Invoke();
+            }
+            catch (Exception ex)
+            {
+                UnityEngine.Debug.LogException(ex);
+            }
             return wasm_trap_t_ptr.Null;
         }
 
@@ -248,19 +259,18 @@ namespace IwasmUnity
                         var externArray = new wasm_extern_t_ptr[importCount];
                         externArray[GetImportIndex(module, "\0", "hello\0")] = wasm_func_as_extern(hello_func);
 
+                        wasm_instance_t_ptr instance;
                         wasm_extern_vec_t imports;
                         fixed (wasm_extern_t_ptr* externs = externArray)
                         {
                             imports = new wasm_extern_vec_t(
-                            new size_t((uint)sizeof(wasm_extern_t_ptr) * importCount),
-                            externs,
-                            new size_t(importCount),
-                            new size_t((uint)sizeof(wasm_extern_t_ptr)),
-                            null);
+                                new size_t(importCount),
+                                externs,
+                                new size_t(importCount),
+                                new size_t((uint)sizeof(wasm_extern_t_ptr)),
+                                null);
+                            instance = wasm_instance_new(store, module, &imports, null);
                         }
-
-                        var instance = wasm_instance_new(store, module, &imports, null);
-
 
 
                         try
@@ -438,3 +448,16 @@ namespace IwasmUnity
             null);
     }
 }
+
+/*
+
+#define WASM_ARRAY_VEC(array) 
+{
+    sizeof(array)/sizeof(*(array)),     // size
+    array,                              // data
+    sizeof(array)/sizeof(*(array)),     // num_elems
+    sizeof(*(array)),                   // size_of_elem
+    NULL                                // lock
+}
+
+ */
