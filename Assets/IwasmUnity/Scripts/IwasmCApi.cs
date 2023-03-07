@@ -107,6 +107,15 @@ namespace IwasmUnity
             );
 
         [DllImport(Iwasm.DllName, CallingConvention = Cdecl)]
+        private static extern wasm_func_t_ptr wasm_func_new_with_env(
+            wasm_store_t_ptr store,
+            wasm_functype_t_ptr type,
+            //wasm_func_callback_with_env_t callback,
+            IntPtr callback,    // delegate* unmanaged[Cdecl]<void*, wasm_val_vec_t*, wasm_val_vec_t*, wasm_trap_t_ptr>
+            void* env,
+            void* finalizer);
+
+        [DllImport(Iwasm.DllName, CallingConvention = Cdecl)]
         private static extern void wasm_functype_delete(wasm_functype_t_ptr func_type);
 
 
@@ -153,12 +162,32 @@ namespace IwasmUnity
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate wasm_trap_t_ptr ImportDelegate(wasm_val_vec_t* args, wasm_val_vec_t* results);
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate wasm_trap_t_ptr ImportWithEnvDelegate(void* env, wasm_val_vec_t* args, wasm_val_vec_t* results);
+
         private static ImportDelegate _helloCallback = HelloCallback;
+        private static ImportWithEnvDelegate _helloCallbackWithEnv = HelloCallbackWithEnv;
 
         [AOT.MonoPInvokeCallback(typeof(ImportDelegate))]
         private static wasm_trap_t_ptr HelloCallback(wasm_val_vec_t* args, wasm_val_vec_t* results)
         {
             UnityEngine.Debug.Log("hello !!");
+            try
+            {
+                Hello.SampleAction?.Invoke();
+            }
+            catch (Exception ex)
+            {
+                UnityEngine.Debug.LogException(ex);
+            }
+            return wasm_trap_t_ptr.Null;
+        }
+
+        [AOT.MonoPInvokeCallback(typeof(ImportWithEnvDelegate))]
+        private static wasm_trap_t_ptr HelloCallbackWithEnv(void* env, wasm_val_vec_t* args, wasm_val_vec_t* results)
+        {
+            uint key = (uint)env;
+            UnityEngine.Debug.Log($"hello !! key: {key}");
             try
             {
                 Hello.SampleAction?.Invoke();
@@ -231,7 +260,14 @@ namespace IwasmUnity
                         wasm_func_t_ptr hello_func;
                         try
                         {
-                            hello_func = wasm_func_new(store, hello_type, Marshal.GetFunctionPointerForDelegate(_helloCallback));
+                            uint key = 1234;
+                            //hello_func = wasm_func_new(store, hello_type, Marshal.GetFunctionPointerForDelegate(_helloCallback));
+                            hello_func = wasm_func_new_with_env(
+                                store,
+                                hello_type,
+                                Marshal.GetFunctionPointerForDelegate(_helloCallbackWithEnv),
+                                (void*)key,
+                                null);
                         }
                         finally
                         {
