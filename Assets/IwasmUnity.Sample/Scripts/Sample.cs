@@ -27,13 +27,41 @@ namespace IwasmUnity.Sample
 
         private void Start()
         {
-            StartCoroutine(LoadStreamingAssets("hello.wasm", wasm =>
+            //StartCoroutine(LoadStreamingAssets("hello.wasm", wasm =>
+            //{
+            //    Hello.RunSample(wasm, () =>
+            //    {
+            //        _text.text = "hello !!";
+            //    });
+            //}));
+
+            StartCoroutine(LoadStreamingAssets("memory_sample.wasm", wasm =>
             {
-                Hello.RunSample(wasm, () =>
+                try
                 {
-                    _text.text = "hello !!";
-                });
+                    MemorySample.RunSample(wasm);
+                }
+                catch (Exception ex)
+                {
+                    _text.text = ex.ToString();
+                    throw;
+                }
+                _text.text = "ok!!";
             }));
+
+            //StartCoroutine(LoadStreamingAssets("add_sample.wasm", wasm =>
+            //{
+            //    try
+            //    {
+            //        AddSample.RunSample(wasm);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        _text.text = ex.ToString();
+            //        throw;
+            //    }
+            //    _text.text = "ok!!";
+            //}));
 
             return;
 
