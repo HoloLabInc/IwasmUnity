@@ -156,6 +156,7 @@ PlayerSettings:
   applicationIdentifier:
     Android: com.DefaultCompany.IwasmUnity
     Standalone: com.DefaultCompany.IwasmUnity
+    iPhone: com.DefaultCompany.IwasmUnity
   buildNumber:
     Standalone: 0
     iPhone: 0
