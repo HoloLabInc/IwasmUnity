@@ -118,6 +118,15 @@ namespace IwasmUnity
         public static extern void wasm_extern_vec_delete(wasm_extern_vec_t* externs);
 
         [DllImport(Iwasm.DllName, CallingConvention = Cdecl)]
+        public static extern wasm_functype_t_ptr wasm_func_type(wasm_func_t_ptr func);
+
+        [DllImport(Iwasm.DllName, CallingConvention = Cdecl)]
+        public static extern size_t wasm_func_param_arity(wasm_func_t_ptr func);
+
+        [DllImport(Iwasm.DllName, CallingConvention = Cdecl)]
+        public static extern size_t wasm_func_result_arity(wasm_func_t_ptr func);
+
+        [DllImport(Iwasm.DllName, CallingConvention = Cdecl)]
         public static extern wasm_trap_t_ptr wasm_func_call(
             wasm_func_t_ptr func,
             wasm_val_vec_t* args,
@@ -732,9 +741,20 @@ namespace IwasmUnity
         public bool IsNull => _p == IntPtr.Zero;
     }
 
-    internal readonly struct wasm_functype_t_ptr
+    internal unsafe readonly struct wasm_functype_t_ptr
     {
-        private readonly IntPtr _p;
+        private readonly wasm_functype_t* _p;
+
+        public uint32_t extern_kind => _p->extern_kind;
+        public wasm_valtype_vec_t* parameters => _p->parameters;
+        public wasm_valtype_vec_t* results => _p->results;
+    }
+
+    internal unsafe struct wasm_functype_t
+    {
+        public uint32_t extern_kind;
+        public wasm_valtype_vec_t* parameters;
+        public wasm_valtype_vec_t* results;
     }
 
     internal readonly struct wasm_valtype_t
