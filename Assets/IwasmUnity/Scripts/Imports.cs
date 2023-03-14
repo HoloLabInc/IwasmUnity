@@ -8,6 +8,7 @@ using System.Collections.Concurrent;
 using AOT;
 using System.Threading;
 using System.Collections.Generic;
+using System.Text;
 
 namespace IwasmUnity.Capi
 {
@@ -518,6 +519,65 @@ namespace IwasmUnity.Capi
         internal Function(wasm_func_t_ptr f)
         {
             _f = f;
+        }
+
+        public unsafe object? Call(params object[] args)
+        {
+            if (args == null) { throw new ArgumentException(nameof(args)); }
+
+            // TODO:
+            throw new NotImplementedException();
+
+            //var resultCount = _resultTypes.Length;
+            //var results = stackalloc wasm_val_t[resultCount];
+            //var argCount = args.Length;
+            //var argValues = stackalloc wasm_val_t[argCount];
+            //for (int i = 0; i < argCount; i++)
+            //{
+            //    argValues[i] = wasm_val_t.From(args[i]);
+            //}
+            //CheckArgs(argValues, argCount);
+            //CallUnchecked(argValues, argCount, results, resultCount);
+            //if (resultCount == 0)
+            //{
+            //    return null;
+            //}
+            //else if (resultCount == 1)
+            //{
+            //    return results[0].GetValueAsObject();
+            //}
+            //else
+            //{
+            //    throw new NotSupportedException("multiple return is not supported yet.");
+            //}
+        }
+
+        private unsafe void CallUnchecked(wasm_val_t* args, uint argCount, wasm_val_t* results, uint resultCount)
+        {
+            var argVec = new wasm_val_vec_t(args, argCount);
+            var resultVec = new wasm_val_vec_t(results, resultCount);
+            var trap = IwasmCApi.wasm_func_call(_f, &argVec, &resultVec);
+            try
+            {
+                if (trap.IsNull == false)
+                {
+                    wasm_byte_vec_t message;
+                    IwasmCApi.wasm_trap_message(trap, &message);
+                    var bytelen = (int)message.num_elems;
+                    var p = message.data;
+                    if (p[bytelen - 1] == (byte)'\0')
+                    {
+                        bytelen--;
+                    }
+                    var messageStr = Encoding.UTF8.GetString(p, bytelen);
+                    IwasmCApi.wasm_byte_vec_delete(&message);
+                    throw new WasmTrapException(messageStr);
+                }
+            }
+            finally
+            {
+                IwasmCApi.wasm_trap_delete(trap);
+            }
         }
     }
 
