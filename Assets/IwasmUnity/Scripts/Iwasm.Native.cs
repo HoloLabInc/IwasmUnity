@@ -207,6 +207,12 @@ namespace IwasmUnity
                 typeof(T) == typeof(double) ? wasm_valkind_t.WASM_F64 :
                 throw new ArgumentException($"Invalid type: {typeof(T).FullName}");
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static wasm_valtype_t GetValtype<T>() where T : unmanaged
+        {
+            return new wasm_valtype_t(GetValueType<T>());
+        }
     }
 
     internal unsafe readonly struct wasm_val_t

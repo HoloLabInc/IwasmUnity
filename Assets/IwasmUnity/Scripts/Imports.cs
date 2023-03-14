@@ -50,14 +50,13 @@ namespace IwasmUnity.Capi
             _linked = true;
         }
 
-        private void ImportCore(string moduleName, string funcName, Delegate action, Action<ImportInvocationState> onInvoke)
+        private void ImportCore(string moduleName, string funcName, Delegate import, wasm_functype_t_ptr functype, Action<ImportInvocationState> onInvoke)
         {
             if (_linked)
             {
                 throw new InvalidOperationException("the instance is already created.");
             }
-
-            if (ImportBuilder.TryBuildImportFunction(moduleName, funcName, _module, action, onInvoke, out var index, out var ext, out var instanceSetter))
+            if (ImportBuilder.TryBuildImportFunction(moduleName, funcName, _module, import, functype, onInvoke, out var index, out var ext, out var instanceSetter))
             {
                 _externArray[index] = ext;
                 _instanceSetters.Add(instanceSetter);
@@ -66,41 +65,76 @@ namespace IwasmUnity.Capi
 
         public void ImportAction(string moduleName, string funcName, Action<ImportedContext> import)
         {
-            ImportCore(moduleName, funcName, import, s =>
+            var argTypeVec = wasm_valtype_vec_t.Empty;
+            var resultTypeVec = wasm_valtype_vec_t.Empty;
+            var functype = IwasmCApi.wasm_functype_new(&argTypeVec, &resultTypeVec);
+            try
             {
-                var import = (Action<ImportedContext>)s.Import;
-                import.Invoke(
-                    s.AsContext());
-            });
+                ImportCore(moduleName, funcName, import, functype, s =>
+                {
+                    var import = (Action<ImportedContext>)s.Import;
+                    import.Invoke(
+                        s.AsContext());
+                });
+            }
+            finally
+            {
+                IwasmCApi.wasm_functype_delete(functype);
+            }
         }
 
         public void ImportAction<T1>(string moduleName, string funcName, Action<ImportedContext, T1> import)
             where T1 : unmanaged
         {
-            ImportCore(moduleName, funcName, import, s =>
+            const int ArgCount = 1;
+            var t1 = TypeHelper.GetValtype<T1>();
+            var argTypes = stackalloc wasm_valtype_t*[ArgCount] { &t1 };
+            var argTypeVec = new wasm_valtype_vec_t(argTypes, ArgCount);
+            var resultTypeVec = wasm_valtype_vec_t.Empty;
+            var functype = IwasmCApi.wasm_functype_new(&argTypeVec, &resultTypeVec);
+            try
             {
-                var import = (Action<ImportedContext, T1>)s.Import;
-                import.Invoke(
-                    s.AsContext(),
-                    s.Arg<T1>(0));
-            });
+                ImportCore(moduleName, funcName, import, functype, s =>
+                {
+                    var import = (Action<ImportedContext, T1>)s.Import;
+                    import.Invoke(
+                        s.AsContext(),
+                        s.Arg<T1>(0));
+                });
+            }
+            finally
+            {
+                IwasmCApi.wasm_functype_delete(functype);
+            }
         }
 
         public void ImportAction<T1, T2>(string moduleName, string funcName, Action<ImportedContext, T1, T2> import)
             where T1 : unmanaged
             where T2 : unmanaged
         {
-            ImportCore(moduleName, funcName, import, s =>
+            const int ArgCount = 2;
+            var t1 = TypeHelper.GetValtype<T1>();
+            var t2 = TypeHelper.GetValtype<T2>();
+            var argTypes = stackalloc wasm_valtype_t*[ArgCount] { &t1, &t2 };
+            var argTypeVec = new wasm_valtype_vec_t(argTypes, ArgCount);
+            var resultTypeVec = wasm_valtype_vec_t.Empty;
+            var functype = IwasmCApi.wasm_functype_new(&argTypeVec, &resultTypeVec);
+            try
             {
-                var import = (Action<ImportedContext, T1, T2>)s.Import;
-                import.Invoke(
-                    s.AsContext(),
-                    s.Arg<T1>(0),
-                    s.Arg<T2>(1));
-            });
+                ImportCore(moduleName, funcName, import, functype, s =>
+                {
+                    var import = (Action<ImportedContext, T1, T2>)s.Import;
+                    import.Invoke(
+                        s.AsContext(),
+                        s.Arg<T1>(0),
+                        s.Arg<T2>(1));
+                });
+            }
+            finally
+            {
+                IwasmCApi.wasm_functype_delete(functype);
+            }
         }
-
-
     }
 
     internal unsafe static class ImportBuilder
@@ -117,7 +151,9 @@ namespace IwasmUnity.Capi
 
         public static bool TryBuildImportFunction(
             string moduleName, string funcName, Module module,
-            Delegate import, Action<ImportInvocationState> onInvoke,
+            Delegate import,
+            wasm_functype_t_ptr functype,
+            Action<ImportInvocationState> onInvoke,
             out uint index,
             out wasm_extern_t_ptr ext,
             out Action<Instance> instanceSetter)
@@ -130,7 +166,12 @@ namespace IwasmUnity.Capi
                 return false;
             }
             var key = GenerateNewImportKey();
-            var f = NewWasmFunc(key, module.Store.StoreNative);
+            var f = IwasmCApi.wasm_func_new_with_env(
+                module.Store.StoreNative,
+                functype,
+                Marshal.GetFunctionPointerForDelegate(_onImportedCallback),
+                (void*)key,
+                null);
             var data = new ImportedData(import, onInvoke);
             _importedStore.TryAdd(key, data);
             ext = IwasmCApi.wasm_func_as_extern(f);
@@ -138,34 +179,34 @@ namespace IwasmUnity.Capi
             return true;
         }
 
-        private static wasm_func_t_ptr NewWasmFunc(uint key, wasm_store_t_ptr store)
-        {
-            var ft = GetWasmFunctype(null, 0, null, 0);
-            try
-            {
-                var func = IwasmCApi.wasm_func_new_with_env(
-                    store,
-                    ft,
-                    Marshal.GetFunctionPointerForDelegate(_onImportedCallback),
-                    (void*)key,
-                    null);
-                return func;
-            }
-            finally
-            {
-                IwasmCApi.wasm_functype_delete(ft);
-            }
+        //private static wasm_func_t_ptr NewWasmFunc(uint key, wasm_store_t_ptr store, wasm_functype_t_ptr functype)
+        //{
+        //    var ft = GetWasmFunctype(null, 0, null, 0);
+        //    try
+        //    {
+        //        var func = IwasmCApi.wasm_func_new_with_env(
+        //            store,
+        //            ft,
+        //            Marshal.GetFunctionPointerForDelegate(_onImportedCallback),
+        //            (void*)key,
+        //            null);
+        //        return func;
+        //    }
+        //    finally
+        //    {
+        //        IwasmCApi.wasm_functype_delete(ft);
+        //    }
 
-            static wasm_functype_t_ptr GetWasmFunctype(wasm_valtype_t** p, int paramCount, wasm_valtype_t** r, int resultCount)
-            {
-                wasm_valtype_vec_t parameters;
-                IwasmCApi.wasm_valtype_vec_new(&parameters, new size_t((uint)paramCount), p);
+        //    static wasm_functype_t_ptr GetWasmFunctype(wasm_valtype_t** p, int paramCount, wasm_valtype_t** r, int resultCount)
+        //    {
+        //        wasm_valtype_vec_t parameters;
+        //        IwasmCApi.wasm_valtype_vec_new(&parameters, new size_t((uint)paramCount), p);
 
-                wasm_valtype_vec_t results;
-                IwasmCApi.wasm_valtype_vec_new(&results, new size_t((uint)resultCount), r);
-                return IwasmCApi.wasm_functype_new(&parameters, &results);
-            }
-        }
+        //        wasm_valtype_vec_t results;
+        //        IwasmCApi.wasm_valtype_vec_new(&results, new size_t((uint)resultCount), r);
+        //        return IwasmCApi.wasm_functype_new(&parameters, &results);
+        //    }
+        //}
 
         public static bool TryGetImportIndex(Module module, string moduleName, string funcName, out uint32_t index)
         {

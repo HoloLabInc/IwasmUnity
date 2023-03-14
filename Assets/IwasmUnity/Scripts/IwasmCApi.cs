@@ -760,6 +760,11 @@ namespace IwasmUnity
     internal readonly struct wasm_valtype_t
     {
         public readonly wasm_valkind_t kind;
+
+        public wasm_valtype_t(wasm_valkind_t kind)
+        {
+            this.kind = kind;
+        }
     };
 
     internal enum wasm_externkind_t : byte
@@ -825,6 +830,17 @@ namespace IwasmUnity
         public readonly size_t num_elems;
         public readonly size_t size_of_elem;
         public readonly void* _lock;
+
+        public static wasm_valtype_vec_t Empty => new wasm_valtype_vec_t(null, 0);
+
+        public wasm_valtype_vec_t(wasm_valtype_t** data, uint dataLen)
+        {
+            this.size = new size_t(dataLen);
+            this.data = data;
+            this.num_elems = new size_t(dataLen);
+            this.size_of_elem = new size_t((uint)sizeof(wasm_valtype_t*));
+            this._lock = null;
+        }
     }
 
     internal unsafe readonly struct wasm_val_vec_t
