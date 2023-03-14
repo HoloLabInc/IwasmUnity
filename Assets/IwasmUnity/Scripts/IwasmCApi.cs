@@ -704,6 +704,9 @@ namespace IwasmUnity
     internal readonly struct wasm_extern_t_ptr
     {
         private readonly IntPtr _p;
+
+        public static wasm_extern_t_ptr Null => default;
+        public bool IsNull => _p == IntPtr.Zero;
     }
 
     internal readonly struct wasm_func_t_ptr
@@ -725,6 +728,7 @@ namespace IwasmUnity
         private readonly IntPtr _p;
 
         public static wasm_trap_t_ptr Null => default;
+        public static wasm_trap_t_ptr ErrorInImportedFunc => default;   // TODO:
         public bool IsNull => _p == IntPtr.Zero;
     }
 
