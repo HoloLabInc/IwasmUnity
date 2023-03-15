@@ -117,4 +117,6 @@ namespace IwasmUnity.Capi
             if (condition == false) { throw new InvalidOperationException(message); }
         }
     }
+
+    public delegate object? UntypedFunc(params object[] args);
 }
