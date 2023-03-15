@@ -42,8 +42,11 @@ namespace IwasmUnity.Capi
             wasm_instance_t_ptr instance;
             if (imports != null)
             {
+                if (imports.Module != module)
+                {
+                    throw new ArgumentException("Invalid imports instance.");
+                }
                 var externs = imports.GetExterns();
-
                 fixed (wasm_extern_t_ptr* data = externs)
                 {
                     var importExternVec = new wasm_extern_vec_t(data, (uint)externs.Length);

@@ -72,7 +72,6 @@ namespace IwasmUnity.Sample
                     _text.text = ex.ToString();
                     throw;
                 }
-                _text.text = "ok!!";
             }));
 
             //StartCoroutine(LoadStreamingAssets("add_sample.wasm", wasm =>

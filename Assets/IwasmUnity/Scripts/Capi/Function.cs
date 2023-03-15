@@ -4,8 +4,13 @@ using System.Text;
 
 namespace IwasmUnity.Capi
 {
-    public unsafe sealed class Function
+    public unsafe sealed partial class Function
     {
+        private const string MismatchedArgCountError = "Number of arguments is mismatched";
+        private const string MismatchedRetCountError = "Number of returns is mismatched";
+        private const string MismatchedRetTypeError = "Type of returns is mismatched";
+        private const string MismatchedArgTypeError = "Type of args is mismatched";
+
         // [NOTE] no need to delete
         private readonly wasm_func_t_ptr _f;
         private readonly wasm_valkind_t[] _argTypes;
@@ -33,113 +38,7 @@ namespace IwasmUnity.Capi
             _resultTypes = resultTypes;
         }
 
-        public Action ToAction()
-        {
-            const int argCount = 0;
-            const int retCount = 0;
-            Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
-            Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
-            return () =>
-            {
-                CallUnchecked(null, argCount, null, retCount);
-            };
-        }
-
-        public unsafe Action<T1> ToAction<T1>()
-            where T1 : unmanaged
-        {
-            const int argCount = 1;
-            const int retCount = 0;
-            Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
-            Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
-            Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
-            return (a1) =>
-            {
-                var args = stackalloc wasm_val_t[argCount]
-                {
-                    wasm_val_t.From(a1),
-                };
-                CallUnchecked(args, argCount, null, retCount);
-            };
-        }
-
-        public unsafe Func<TResult> ToFunc<TResult>()
-            where TResult : unmanaged
-        {
-            const int argCount = 0;
-            const int retCount = 1;
-            Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
-            Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
-            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
-            return () =>
-            {
-                wasm_val_t ret;
-                CallUnchecked(null, argCount, &ret, retCount);
-                return ret.GetValueAs<TResult>();
-            };
-        }
-
-        public unsafe Func<T1, TResult> ToFunc<T1, TResult>()
-            where T1 : unmanaged
-            where TResult : unmanaged
-        {
-            const int argCount = 1;
-            const int retCount = 1;
-            Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
-            Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
-            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
-            Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
-            return (a1) =>
-            {
-                var args = stackalloc wasm_val_t[argCount]
-                {
-                    wasm_val_t.From(a1),
-                };
-                wasm_val_t ret;
-                CallUnchecked(args, argCount, &ret, retCount);
-                return ret.GetValueAs<TResult>();
-            };
-        }
-
-        public unsafe Func<T1, T2, TResult> ToFunc<T1, T2, TResult>()
-            where T1 : unmanaged
-            where T2 : unmanaged
-            where TResult : unmanaged
-        {
-            const int argCount = 2;
-            const int retCount = 1;
-            Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
-            Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
-            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
-            Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
-            return (a1, a2) =>
-            {
-                var args = stackalloc wasm_val_t[argCount]
-                {
-                    wasm_val_t.From(a1),
-                    wasm_val_t.From(a2),
-                };
-                wasm_val_t ret;
-                CallUnchecked(args, argCount, &ret, retCount);
-                return ret.GetValueAs<TResult>();
-            };
-        }
-
-        private const string MismatchedArgCountError = "Number of arguments is mismatched";
-        private const string MismatchedRetCountError = "Number of returns is mismatched";
-        private const string MismatchedRetTypeError = "Type of returns is mismatched";
-        private const string MismatchedArgTypeError = "Type of args is mismatched";
-
-        private static void Ensure(bool condition, string message)
-        {
-            if (condition == false) { throw new InvalidOperationException(message); }
-        }
-
-        public UntypedFunc ToUntypedDelegate()
-        {
-            return new UntypedFunc(Call);
-        }
+        public UntypedFunc ToUntypedDelegate() => new UntypedFunc(Call);
 
         public object? Call(params object[] args)
         {
@@ -211,6 +110,11 @@ namespace IwasmUnity.Capi
             {
                 IwasmCApi.wasm_trap_delete(trap);
             }
+        }
+
+        private static void Ensure(bool condition, string message)
+        {
+            if (condition == false) { throw new InvalidOperationException(message); }
         }
     }
 }

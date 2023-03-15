@@ -15,6 +15,8 @@ namespace IwasmUnity.Capi
         private Module _module;
         private bool _linked;
 
+        internal Module Module => _module;
+
         internal Imports(Module module)
         {
             if (module.IsDisposed)

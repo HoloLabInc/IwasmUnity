@@ -50,35 +50,6 @@ namespace IwasmUnity.Capi
             return true;
         }
 
-        //private static wasm_func_t_ptr NewWasmFunc(uint key, wasm_store_t_ptr store, wasm_functype_t_ptr functype)
-        //{
-        //    var ft = GetWasmFunctype(null, 0, null, 0);
-        //    try
-        //    {
-        //        var func = IwasmCApi.wasm_func_new_with_env(
-        //            store,
-        //            ft,
-        //            Marshal.GetFunctionPointerForDelegate(_onImportedCallback),
-        //            (void*)key,
-        //            null);
-        //        return func;
-        //    }
-        //    finally
-        //    {
-        //        IwasmCApi.wasm_functype_delete(ft);
-        //    }
-
-        //    static wasm_functype_t_ptr GetWasmFunctype(wasm_valtype_t** p, int paramCount, wasm_valtype_t** r, int resultCount)
-        //    {
-        //        wasm_valtype_vec_t parameters;
-        //        IwasmCApi.wasm_valtype_vec_new(&parameters, new size_t((uint)paramCount), p);
-
-        //        wasm_valtype_vec_t results;
-        //        IwasmCApi.wasm_valtype_vec_new(&results, new size_t((uint)resultCount), r);
-        //        return IwasmCApi.wasm_functype_new(&parameters, &results);
-        //    }
-        //}
-
         public static bool TryGetImportIndex(Module module, string moduleName, string funcName, out uint32_t index)
         {
             using var mn = UnmanagedBytes.CreateAsciiNullTerminated(moduleName);
