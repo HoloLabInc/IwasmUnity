@@ -8,7 +8,7 @@ using size_t = System.UIntPtr;
 
 namespace IwasmUnity
 {
-    public unsafe class Imports
+    public unsafe partial class Imports
     {
         private wasm_extern_t_ptr[] _externArray;
         private readonly List<Action<Instance>> _instanceSetters = new List<Action<Instance>>();
@@ -62,79 +62,6 @@ namespace IwasmUnity
             }
             return false;
         }
-
-        public bool ImportAction(string moduleName, string funcName, Action<ImportedContext> import)
-        {
-            var argTypeVec = wasm_valtype_vec_t.Empty;
-            var resultTypeVec = wasm_valtype_vec_t.Empty;
-            var functype = IwasmCApi.wasm_functype_new(&argTypeVec, &resultTypeVec);
-            try
-            {
-                return ImportCore(moduleName, funcName, import, functype, s =>
-                {
-                    var import = (Action<ImportedContext>)s.Import;
-                    import.Invoke(
-                        s.AsContext());
-                });
-            }
-            finally
-            {
-                IwasmCApi.wasm_functype_delete(functype);
-            }
-        }
-
-        public bool ImportAction<T1>(string moduleName, string funcName, Action<ImportedContext, T1> import)
-            where T1 : unmanaged
-        {
-            const int ArgCount = 1;
-            var t1 = TypeHelper.GetValtype<T1>();
-            var argTypes = stackalloc wasm_valtype_t*[ArgCount] { &t1 };
-            var argTypeVec = new wasm_valtype_vec_t(argTypes, ArgCount);
-            var resultTypeVec = wasm_valtype_vec_t.Empty;
-            var functype = IwasmCApi.wasm_functype_new(&argTypeVec, &resultTypeVec);
-            try
-            {
-                return ImportCore(moduleName, funcName, import, functype, s =>
-                {
-                    var import = (Action<ImportedContext, T1>)s.Import;
-                    import.Invoke(
-                        s.AsContext(),
-                        s.Arg<T1>(0));
-                });
-            }
-            finally
-            {
-                IwasmCApi.wasm_functype_delete(functype);
-            }
-        }
-
-        public bool ImportAction<T1, T2>(string moduleName, string funcName, Action<ImportedContext, T1, T2> import)
-            where T1 : unmanaged
-            where T2 : unmanaged
-        {
-            const int ArgCount = 2;
-            var t1 = TypeHelper.GetValtype<T1>();
-            var t2 = TypeHelper.GetValtype<T2>();
-            var argTypes = stackalloc wasm_valtype_t*[ArgCount] { &t1, &t2 };
-            var argTypeVec = new wasm_valtype_vec_t(argTypes, ArgCount);
-            var resultTypeVec = wasm_valtype_vec_t.Empty;
-            var functype = IwasmCApi.wasm_functype_new(&argTypeVec, &resultTypeVec);
-            try
-            {
-                return ImportCore(moduleName, funcName, import, functype, s =>
-                {
-                    var import = (Action<ImportedContext, T1, T2>)s.Import;
-                    import.Invoke(
-                        s.AsContext(),
-                        s.Arg<T1>(0),
-                        s.Arg<T2>(1));
-                });
-            }
-            finally
-            {
-                IwasmCApi.wasm_functype_delete(functype);
-            }
-        }
     }
 
     internal unsafe readonly struct ImportInvocationState
@@ -163,6 +90,11 @@ namespace IwasmUnity
         public T Arg<T>(uint i) where T : unmanaged
         {
             return Args[i].GetValueAs<T>();
+        }
+
+        public void SetResult<T>(uint i, T value) where T : unmanaged
+        {
+            Results[i] = wasm_val_t.From<T>(value);
         }
 
         public ImportedContext AsContext()

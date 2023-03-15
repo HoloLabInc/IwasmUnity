@@ -424,7 +424,7 @@ namespace IwasmUnity
                 throw new ArgumentException($"Invalid value type: {typeof(T).FullName}");
         }
 
-        public static wasm_val_t From(object x)
+        public static wasm_val_t FromObject(object x)
         {
             return
                 x is int intValue ? I32(intValue) :

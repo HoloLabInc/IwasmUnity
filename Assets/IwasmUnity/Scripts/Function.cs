@@ -50,7 +50,7 @@ namespace IwasmUnity
             var argValues = stackalloc wasm_val_t[argCount];
             for (int i = 0; i < argCount; i++)
             {
-                argValues[i] = wasm_val_t.From(args[i]);
+                argValues[i] = wasm_val_t.FromObject(args[i]);
             }
             CheckArgs(argValues, argCount);
             CallUnchecked(argValues, (uint)argCount, results, (uint)resultCount);
