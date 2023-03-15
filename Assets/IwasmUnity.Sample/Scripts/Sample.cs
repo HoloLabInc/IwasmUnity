@@ -35,11 +35,35 @@ namespace IwasmUnity.Sample
             //    });
             //}));
 
-            StartCoroutine(LoadStreamingAssets("memory_sample.wasm", wasm =>
+            //StartCoroutine(LoadStreamingAssets("memory_sample.wasm", wasm =>
+            //{
+            //    try
+            //    {
+            //        MemorySample.RunSample(wasm);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        _text.text = ex.ToString();
+            //        throw;
+            //    }
+            //    _text.text = "ok!!";
+            //}));
+
+            StartCoroutine(LoadStreamingAssets("hello.wasm", wasm =>
             {
                 try
                 {
-                    MemorySample.RunSample(wasm);
+                    using var engine = new Capi.Engine();
+                    using var store = new Capi.Store(engine);
+                    using var module = Capi.Module.CreateFromWasm(store, wasm);
+                    var imports = module.CreateImports();
+                    imports.ImportAction("", "hello", context =>
+                    {
+                        Debug.Log("hello from C#");
+                    });
+                    using var instance = module.CreateInstance(imports);
+                    var run = instance.Exports.GetFunction("run").ToAction();
+                    run.Invoke();
                 }
                 catch (Exception ex)
                 {

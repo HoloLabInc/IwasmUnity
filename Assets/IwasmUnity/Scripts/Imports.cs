@@ -9,6 +9,7 @@ using AOT;
 using System.Threading;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace IwasmUnity.Capi
 {
@@ -37,7 +38,7 @@ namespace IwasmUnity.Capi
 
         internal wasm_extern_t_ptr[] GetExterns()
         {
-            return _externArray;
+            return _externArray.ToArray();
         }
 
         internal void SetInstance(Instance instance)
@@ -50,7 +51,7 @@ namespace IwasmUnity.Capi
             _linked = true;
         }
 
-        private void ImportCore(string moduleName, string funcName, Delegate import, wasm_functype_t_ptr functype, Action<ImportInvocationState> onInvoke)
+        private bool ImportCore(string moduleName, string funcName, Delegate import, wasm_functype_t_ptr functype, Action<ImportInvocationState> onInvoke)
         {
             if (_linked)
             {
@@ -60,17 +61,19 @@ namespace IwasmUnity.Capi
             {
                 _externArray[index] = ext;
                 _instanceSetters.Add(instanceSetter);
+                return true;
             }
+            return false;
         }
 
-        public void ImportAction(string moduleName, string funcName, Action<ImportedContext> import)
+        public bool ImportAction(string moduleName, string funcName, Action<ImportedContext> import)
         {
             var argTypeVec = wasm_valtype_vec_t.Empty;
             var resultTypeVec = wasm_valtype_vec_t.Empty;
             var functype = IwasmCApi.wasm_functype_new(&argTypeVec, &resultTypeVec);
             try
             {
-                ImportCore(moduleName, funcName, import, functype, s =>
+                return ImportCore(moduleName, funcName, import, functype, s =>
                 {
                     var import = (Action<ImportedContext>)s.Import;
                     import.Invoke(
@@ -83,7 +86,7 @@ namespace IwasmUnity.Capi
             }
         }
 
-        public void ImportAction<T1>(string moduleName, string funcName, Action<ImportedContext, T1> import)
+        public bool ImportAction<T1>(string moduleName, string funcName, Action<ImportedContext, T1> import)
             where T1 : unmanaged
         {
             const int ArgCount = 1;
@@ -94,7 +97,7 @@ namespace IwasmUnity.Capi
             var functype = IwasmCApi.wasm_functype_new(&argTypeVec, &resultTypeVec);
             try
             {
-                ImportCore(moduleName, funcName, import, functype, s =>
+                return ImportCore(moduleName, funcName, import, functype, s =>
                 {
                     var import = (Action<ImportedContext, T1>)s.Import;
                     import.Invoke(
@@ -108,7 +111,7 @@ namespace IwasmUnity.Capi
             }
         }
 
-        public void ImportAction<T1, T2>(string moduleName, string funcName, Action<ImportedContext, T1, T2> import)
+        public bool ImportAction<T1, T2>(string moduleName, string funcName, Action<ImportedContext, T1, T2> import)
             where T1 : unmanaged
             where T2 : unmanaged
         {
@@ -121,7 +124,7 @@ namespace IwasmUnity.Capi
             var functype = IwasmCApi.wasm_functype_new(&argTypeVec, &resultTypeVec);
             try
             {
-                ImportCore(moduleName, funcName, import, functype, s =>
+                return ImportCore(moduleName, funcName, import, functype, s =>
                 {
                     var import = (Action<ImportedContext, T1, T2>)s.Import;
                     import.Invoke(
@@ -381,7 +384,7 @@ namespace IwasmUnity.Capi
             _module = module;
         }
 
-        public unsafe Module CreateFromWasm(Store store, byte[] wasm)
+        public static unsafe Module CreateFromWasm(Store store, byte[] wasm)
         {
             if (store.IsDisposed)
             {
@@ -410,9 +413,14 @@ namespace IwasmUnity.Capi
             }
         }
 
-        public Instance CreateInstance(Module module, Imports imports, uint32_t stackSize = 32 * 1024, uint32_t heapSize = 0)
+        public Imports CreateImports()
         {
-            return new Instance(module, imports, stackSize, heapSize);
+            return new Imports(this);
+        }
+
+        public Instance CreateInstance(Imports imports, uint32_t stackSize = 32 * 1024, uint32_t heapSize = 0)
+        {
+            return new Instance(this, imports, stackSize, heapSize);
         }
 
         public void Dispose()
@@ -552,14 +560,14 @@ namespace IwasmUnity.Capi
         }
     }
 
-    public sealed class Function
+    public unsafe sealed class Function
     {
         // [NOTE] no need to delete
         private readonly wasm_func_t_ptr _f;
         private readonly wasm_valkind_t[] _argTypes;
         private readonly wasm_valkind_t[] _resultTypes;
 
-        internal unsafe Function(wasm_func_t_ptr f)
+        internal Function(wasm_func_t_ptr f)
         {
             var functype = IwasmCApi.wasm_func_type(f);
             var argCount = functype.parameters->num_elems.ToUInt32();
@@ -581,12 +589,90 @@ namespace IwasmUnity.Capi
             _resultTypes = resultTypes;
         }
 
+        public Action ToAction()
+        {
+            const int argCount = 0;
+            const int retCount = 0;
+            Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
+            Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
+            return () =>
+            {
+                CallUnchecked(null, argCount, null, retCount);
+            };
+        }
+
+        public unsafe Action<T1> ToAction<T1>()
+            where T1 : unmanaged
+        {
+            const int argCount = 1;
+            const int retCount = 0;
+            Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
+            Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
+            Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
+            return (a1) =>
+            {
+                var args = stackalloc wasm_val_t[argCount]
+                {
+                    wasm_val_t.From(a1),
+                };
+                CallUnchecked(args, argCount, null, retCount);
+            };
+        }
+
+        public unsafe Func<TResult> ToFunc<TResult>()
+            where TResult : unmanaged
+        {
+            const int argCount = 0;
+            const int retCount = 1;
+            Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
+            Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
+            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
+            return () =>
+            {
+                wasm_val_t ret;
+                CallUnchecked(null, argCount, &ret, retCount);
+                return ret.GetValueAs<TResult>();
+            };
+        }
+
+        public unsafe Func<T1, TResult> ToFunc<T1, TResult>()
+            where T1 : unmanaged
+            where TResult : unmanaged
+        {
+            const int argCount = 1;
+            const int retCount = 1;
+            Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
+            Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
+            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
+            Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
+            return (a1) =>
+            {
+                var args = stackalloc wasm_val_t[argCount]
+                {
+                    wasm_val_t.From(a1),
+                };
+                wasm_val_t ret;
+                CallUnchecked(args, argCount, &ret, retCount);
+                return ret.GetValueAs<TResult>();
+            };
+        }
+
+        private const string MismatchedArgCountError = "Number of arguments is mismatched";
+        private const string MismatchedRetCountError = "Number of returns is mismatched";
+        private const string MismatchedRetTypeError = "Type of returns is mismatched";
+        private const string MismatchedArgTypeError = "Type of args is mismatched";
+
+        private static void Ensure(bool condition, string message)
+        {
+            if (condition == false) { throw new InvalidOperationException(message); }
+        }
+
         public UntypedFunc ToUntypedDelegate()
         {
             return new UntypedFunc(Call);
         }
 
-        public unsafe object? Call(params object[] args)
+        public object? Call(params object[] args)
         {
             if (args == null) { throw new ArgumentException(nameof(args)); }
 
@@ -614,7 +700,7 @@ namespace IwasmUnity.Capi
             }
         }
 
-        private unsafe void CheckArgs(wasm_val_t* args, int argCount)
+        private void CheckArgs(wasm_val_t* args, int argCount)
         {
             var expectedTypes = _argTypes;
             if (argCount != expectedTypes.Length)
@@ -630,7 +716,7 @@ namespace IwasmUnity.Capi
             }
         }
 
-        private unsafe void CallUnchecked(wasm_val_t* args, uint argCount, wasm_val_t* results, uint resultCount)
+        private void CallUnchecked(wasm_val_t* args, uint argCount, wasm_val_t* results, uint resultCount)
         {
             var argVec = new wasm_val_vec_t(args, argCount);
             var resultVec = new wasm_val_vec_t(results, resultCount);
@@ -665,6 +751,20 @@ namespace IwasmUnity.Capi
         private wasm_memory_t_ptr _memory;
         private Instance _instance;
 
+        public uint Size => IwasmCApi.wasm_memory_data_size(_memory).ToUInt32();
+
+        public IntPtr Ptr
+        {
+            get
+            {
+                unsafe
+                {
+                    var ptr = IwasmCApi.wasm_memory_data(_memory);
+                    return (IntPtr)ptr;
+                }
+            }
+        }
+
         internal Memory(wasm_memory_t_ptr memory, Instance instance)
         {
             _memory = memory;
@@ -675,6 +775,10 @@ namespace IwasmUnity.Capi
     public readonly struct ImportedContext
     {
         private readonly Memory? _memory;
+
+        public uint MemorySize => _memory?.Size ?? 0;
+
+        public IntPtr MemoryPtr => _memory?.Ptr ?? IntPtr.Zero;
 
         internal ImportedContext(Memory? memory)
         {

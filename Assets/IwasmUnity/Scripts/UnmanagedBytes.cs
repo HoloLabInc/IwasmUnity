@@ -33,9 +33,15 @@ namespace IwasmUnity
 
         public static UnmanagedBytes CreateAsciiNullTerminated(string str)
         {
-            if (string.IsNullOrEmpty(str))
+            if (str == null)
             {
                 return Empty;
+            }
+            if (str == "")
+            {
+                var nullTerminated = new UnmanagedBytes(1);
+                *(byte*)nullTerminated._ptr = (byte)'\0';
+                return nullTerminated;
             }
             var enc = Encoding.ASCII;
             var bytelen = enc.GetByteCount(str);
