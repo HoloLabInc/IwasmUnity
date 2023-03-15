@@ -53,9 +53,9 @@ namespace IwasmUnity.Sample
             {
                 try
                 {
-                    using var engine = new Capi.Engine();
-                    using var store = new Capi.Store(engine);
-                    using var module = Capi.Module.CreateFromWasm(store, wasm);
+                    using var engine = new Engine();
+                    using var store = new Store(engine);
+                    using var module = Module.CreateFromWasm(store, wasm);
                     var imports = module.CreateImports();
                     imports.ImportAction("", "hello", context =>
                     {
@@ -78,9 +78,9 @@ namespace IwasmUnity.Sample
             //{
             //    try
             //    {
-            //        using var engine = new Capi.Engine();
-            //        using var store = new Capi.Store(engine);
-            //        using var module = Capi.Module.CreateFromWasm(store, wasm);
+            //        using var engine = new Engine();
+            //        using var store = new Store(engine);
+            //        using var module = Module.CreateFromWasm(store, wasm);
             //        using var instance = module.CreateInstance(null);
             //        var add = instance.Exports.GetFunction("add").ToFunc<int, int, int>();
 
@@ -100,9 +100,9 @@ namespace IwasmUnity.Sample
             //{
             //    try
             //    {
-            //        using var engine = new Capi.Engine();
-            //        using var store = new Capi.Store(engine);
-            //        using var module = Capi.Module.CreateFromWasm(store, wasm);
+            //        using var engine = new Engine();
+            //        using var store = new Store(engine);
+            //        using var module = Module.CreateFromWasm(store, wasm);
             //        using var instance = module.CreateInstance(null, stackSize: 2 * 1024 * 1024);
             //        var main = instance.Exports.GetFunction("_start").ToAction();
             //        main.Invoke();

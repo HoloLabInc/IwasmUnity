@@ -3,7 +3,7 @@ using System;
 using uint32_t = System.UInt32;
 using size_t = System.UIntPtr;
 
-namespace IwasmUnity.Capi
+namespace IwasmUnity
 {
     public sealed class Module : IDisposable
     {

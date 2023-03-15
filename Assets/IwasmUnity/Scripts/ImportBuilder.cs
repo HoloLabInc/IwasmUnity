@@ -6,7 +6,7 @@ using System.Collections.Concurrent;
 using AOT;
 using System.Threading;
 
-namespace IwasmUnity.Capi
+namespace IwasmUnity
 {
     internal unsafe static class ImportBuilder
     {

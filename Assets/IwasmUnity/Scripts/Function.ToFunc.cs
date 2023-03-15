@@ -1,29 +1,35 @@
 ﻿#nullable enable
 using System;
 
-namespace IwasmUnity.Capi
+namespace IwasmUnity
 {
     unsafe partial class Function
     {
-        public Action ToAction()
+        public unsafe Func<TResult> ToFunc<TResult>()
+            where TResult : unmanaged
         {
             const int argCount = 0;
-            const int retCount = 0;
+            const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
+            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
             return () =>
             {
-                CallUnchecked(null, argCount, null, retCount);
+                wasm_val_t ret;
+                CallUnchecked(null, argCount, &ret, retCount);
+                return ret.GetValueAs<TResult>();
             };
         }
 
-        public unsafe Action<T1> ToAction<T1>()
+        public unsafe Func<T1, TResult> ToFunc<T1, TResult>()
             where T1 : unmanaged
+            where TResult : unmanaged
         {
             const int argCount = 1;
-            const int retCount = 0;
+            const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
+            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
             Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
             return (a1) =>
             {
@@ -31,18 +37,22 @@ namespace IwasmUnity.Capi
                 {
                     wasm_val_t.From(a1),
                 };
-                CallUnchecked(args, argCount, null, retCount);
+                wasm_val_t ret;
+                CallUnchecked(args, argCount, &ret, retCount);
+                return ret.GetValueAs<TResult>();
             };
         }
 
-        public unsafe Action<T1, T2> ToAction<T1, T2>()
+        public unsafe Func<T1, T2, TResult> ToFunc<T1, T2, TResult>()
             where T1 : unmanaged
             where T2 : unmanaged
+            where TResult : unmanaged
         {
             const int argCount = 2;
-            const int retCount = 0;
+            const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
+            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
             Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
             Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
             return (a1, a2) =>
@@ -52,19 +62,23 @@ namespace IwasmUnity.Capi
                     wasm_val_t.From(a1),
                     wasm_val_t.From(a2),
                 };
-                CallUnchecked(args, argCount, null, retCount);
+                wasm_val_t ret;
+                CallUnchecked(args, argCount, &ret, retCount);
+                return ret.GetValueAs<TResult>();
             };
         }
 
-        public unsafe Action<T1, T2, T3> ToAction<T1, T2, T3>()
+        public unsafe Func<T1, T2, T3, TResult> ToFunc<T1, T2, T3, TResult>()
             where T1 : unmanaged
             where T2 : unmanaged
             where T3 : unmanaged
+            where TResult : unmanaged
         {
             const int argCount = 3;
-            const int retCount = 0;
+            const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
+            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
             Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
             Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
             Ensure(TypeHelper.GetValueType<T3>() == _argTypes[2], MismatchedArgTypeError);
@@ -76,20 +90,24 @@ namespace IwasmUnity.Capi
                     wasm_val_t.From(a2),
                     wasm_val_t.From(a3),
                 };
-                CallUnchecked(args, argCount, null, retCount);
+                wasm_val_t ret;
+                CallUnchecked(args, argCount, &ret, retCount);
+                return ret.GetValueAs<TResult>();
             };
         }
 
-        public unsafe Action<T1, T2, T3, T4> ToAction<T1, T2, T3, T4>()
+        public unsafe Func<T1, T2, T3, T4, TResult> ToFunc<T1, T2, T3, T4, TResult>()
             where T1 : unmanaged
             where T2 : unmanaged
             where T3 : unmanaged
             where T4 : unmanaged
+            where TResult : unmanaged
         {
             const int argCount = 4;
-            const int retCount = 0;
+            const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
+            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
             Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
             Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
             Ensure(TypeHelper.GetValueType<T3>() == _argTypes[2], MismatchedArgTypeError);
@@ -103,21 +121,25 @@ namespace IwasmUnity.Capi
                     wasm_val_t.From(a3),
                     wasm_val_t.From(a4),
                 };
-                CallUnchecked(args, argCount, null, retCount);
+                wasm_val_t ret;
+                CallUnchecked(args, argCount, &ret, retCount);
+                return ret.GetValueAs<TResult>();
             };
         }
 
-        public unsafe Action<T1, T2, T3, T4, T5> ToAction<T1, T2, T3, T4, T5>()
+        public unsafe Func<T1, T2, T3, T4, T5, TResult> ToFunc<T1, T2, T3, T4, T5, TResult>()
             where T1 : unmanaged
             where T2 : unmanaged
             where T3 : unmanaged
             where T4 : unmanaged
             where T5 : unmanaged
+            where TResult : unmanaged
         {
             const int argCount = 5;
-            const int retCount = 0;
+            const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
+            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
             Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
             Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
             Ensure(TypeHelper.GetValueType<T3>() == _argTypes[2], MismatchedArgTypeError);
@@ -133,22 +155,26 @@ namespace IwasmUnity.Capi
                     wasm_val_t.From(a4),
                     wasm_val_t.From(a5),
                 };
-                CallUnchecked(args, argCount, null, retCount);
+                wasm_val_t ret;
+                CallUnchecked(args, argCount, &ret, retCount);
+                return ret.GetValueAs<TResult>();
             };
         }
 
-        public unsafe Action<T1, T2, T3, T4, T5, T6> ToAction<T1, T2, T3, T4, T5, T6>()
+        public unsafe Func<T1, T2, T3, T4, T5, T6, TResult> ToFunc<T1, T2, T3, T4, T5, T6, TResult>()
             where T1 : unmanaged
             where T2 : unmanaged
             where T3 : unmanaged
             where T4 : unmanaged
             where T5 : unmanaged
             where T6 : unmanaged
+            where TResult : unmanaged
         {
             const int argCount = 6;
-            const int retCount = 0;
+            const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
+            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
             Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
             Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
             Ensure(TypeHelper.GetValueType<T3>() == _argTypes[2], MismatchedArgTypeError);
@@ -166,11 +192,13 @@ namespace IwasmUnity.Capi
                     wasm_val_t.From(a5),
                     wasm_val_t.From(a6),
                 };
-                CallUnchecked(args, argCount, null, retCount);
+                wasm_val_t ret;
+                CallUnchecked(args, argCount, &ret, retCount);
+                return ret.GetValueAs<TResult>();
             };
         }
 
-        public unsafe Action<T1, T2, T3, T4, T5, T6, T7> ToAction<T1, T2, T3, T4, T5, T6, T7>()
+        public unsafe Func<T1, T2, T3, T4, T5, T6, T7, TResult> ToFunc<T1, T2, T3, T4, T5, T6, T7, TResult>()
             where T1 : unmanaged
             where T2 : unmanaged
             where T3 : unmanaged
@@ -178,11 +206,13 @@ namespace IwasmUnity.Capi
             where T5 : unmanaged
             where T6 : unmanaged
             where T7 : unmanaged
+            where TResult : unmanaged
         {
             const int argCount = 7;
-            const int retCount = 0;
+            const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
+            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
             Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
             Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
             Ensure(TypeHelper.GetValueType<T3>() == _argTypes[2], MismatchedArgTypeError);
@@ -202,11 +232,13 @@ namespace IwasmUnity.Capi
                     wasm_val_t.From(a6),
                     wasm_val_t.From(a7),
                 };
-                CallUnchecked(args, argCount, null, retCount);
+                wasm_val_t ret;
+                CallUnchecked(args, argCount, &ret, retCount);
+                return ret.GetValueAs<TResult>();
             };
         }
 
-        public unsafe Action<T1, T2, T3, T4, T5, T6, T7, T8> ToAction<T1, T2, T3, T4, T5, T6, T7, T8>()
+        public unsafe Func<T1, T2, T3, T4, T5, T6, T7, T8, TResult> ToFunc<T1, T2, T3, T4, T5, T6, T7, T8, TResult>()
             where T1 : unmanaged
             where T2 : unmanaged
             where T3 : unmanaged
@@ -215,11 +247,13 @@ namespace IwasmUnity.Capi
             where T6 : unmanaged
             where T7 : unmanaged
             where T8 : unmanaged
+            where TResult : unmanaged
         {
             const int argCount = 8;
-            const int retCount = 0;
+            const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
+            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
             Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
             Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
             Ensure(TypeHelper.GetValueType<T3>() == _argTypes[2], MismatchedArgTypeError);
@@ -241,11 +275,13 @@ namespace IwasmUnity.Capi
                     wasm_val_t.From(a7),
                     wasm_val_t.From(a8),
                 };
-                CallUnchecked(args, argCount, null, retCount);
+                wasm_val_t ret;
+                CallUnchecked(args, argCount, &ret, retCount);
+                return ret.GetValueAs<TResult>();
             };
         }
 
-        public unsafe Action<T1, T2, T3, T4, T5, T6, T7, T8, T9> ToAction<T1, T2, T3, T4, T5, T6, T7, T8, T9>()
+        public unsafe Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> ToFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>()
             where T1 : unmanaged
             where T2 : unmanaged
             where T3 : unmanaged
@@ -255,11 +291,13 @@ namespace IwasmUnity.Capi
             where T7 : unmanaged
             where T8 : unmanaged
             where T9 : unmanaged
+            where TResult : unmanaged
         {
             const int argCount = 9;
-            const int retCount = 0;
+            const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
+            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
             Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
             Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
             Ensure(TypeHelper.GetValueType<T3>() == _argTypes[2], MismatchedArgTypeError);
@@ -283,11 +321,13 @@ namespace IwasmUnity.Capi
                     wasm_val_t.From(a8),
                     wasm_val_t.From(a9),
                 };
-                CallUnchecked(args, argCount, null, retCount);
+                wasm_val_t ret;
+                CallUnchecked(args, argCount, &ret, retCount);
+                return ret.GetValueAs<TResult>();
             };
         }
 
-        public unsafe Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> ToAction<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>()
+        public unsafe Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> ToFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>()
             where T1 : unmanaged
             where T2 : unmanaged
             where T3 : unmanaged
@@ -298,11 +338,13 @@ namespace IwasmUnity.Capi
             where T8 : unmanaged
             where T9 : unmanaged
             where T10 : unmanaged
+            where TResult : unmanaged
         {
             const int argCount = 10;
-            const int retCount = 0;
+            const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
+            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
             Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
             Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
             Ensure(TypeHelper.GetValueType<T3>() == _argTypes[2], MismatchedArgTypeError);
@@ -328,11 +370,13 @@ namespace IwasmUnity.Capi
                     wasm_val_t.From(a9),
                     wasm_val_t.From(a10),
                 };
-                CallUnchecked(args, argCount, null, retCount);
+                wasm_val_t ret;
+                CallUnchecked(args, argCount, &ret, retCount);
+                return ret.GetValueAs<TResult>();
             };
         }
 
-        public unsafe Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> ToAction<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>()
+        public unsafe Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult> ToFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>()
             where T1 : unmanaged
             where T2 : unmanaged
             where T3 : unmanaged
@@ -344,11 +388,13 @@ namespace IwasmUnity.Capi
             where T9 : unmanaged
             where T10 : unmanaged
             where T11 : unmanaged
+            where TResult : unmanaged
         {
             const int argCount = 11;
-            const int retCount = 0;
+            const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
+            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
             Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
             Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
             Ensure(TypeHelper.GetValueType<T3>() == _argTypes[2], MismatchedArgTypeError);
@@ -376,11 +422,13 @@ namespace IwasmUnity.Capi
                     wasm_val_t.From(a10),
                     wasm_val_t.From(a11),
                 };
-                CallUnchecked(args, argCount, null, retCount);
+                wasm_val_t ret;
+                CallUnchecked(args, argCount, &ret, retCount);
+                return ret.GetValueAs<TResult>();
             };
         }
 
-        public unsafe Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> ToAction<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>()
+        public unsafe Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult> ToFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>()
             where T1 : unmanaged
             where T2 : unmanaged
             where T3 : unmanaged
@@ -393,11 +441,13 @@ namespace IwasmUnity.Capi
             where T10 : unmanaged
             where T11 : unmanaged
             where T12 : unmanaged
+            where TResult : unmanaged
         {
             const int argCount = 12;
-            const int retCount = 0;
+            const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
+            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
             Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
             Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
             Ensure(TypeHelper.GetValueType<T3>() == _argTypes[2], MismatchedArgTypeError);
@@ -427,11 +477,13 @@ namespace IwasmUnity.Capi
                     wasm_val_t.From(a11),
                     wasm_val_t.From(a12),
                 };
-                CallUnchecked(args, argCount, null, retCount);
+                wasm_val_t ret;
+                CallUnchecked(args, argCount, &ret, retCount);
+                return ret.GetValueAs<TResult>();
             };
         }
 
-        public unsafe Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> ToAction<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>()
+        public unsafe Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult> ToFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>()
             where T1 : unmanaged
             where T2 : unmanaged
             where T3 : unmanaged
@@ -445,11 +497,13 @@ namespace IwasmUnity.Capi
             where T11 : unmanaged
             where T12 : unmanaged
             where T13 : unmanaged
+            where TResult : unmanaged
         {
             const int argCount = 13;
-            const int retCount = 0;
+            const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
+            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
             Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
             Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
             Ensure(TypeHelper.GetValueType<T3>() == _argTypes[2], MismatchedArgTypeError);
@@ -481,11 +535,13 @@ namespace IwasmUnity.Capi
                     wasm_val_t.From(a12),
                     wasm_val_t.From(a13),
                 };
-                CallUnchecked(args, argCount, null, retCount);
+                wasm_val_t ret;
+                CallUnchecked(args, argCount, &ret, retCount);
+                return ret.GetValueAs<TResult>();
             };
         }
 
-        public unsafe Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> ToAction<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>()
+        public unsafe Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult> ToFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>()
             where T1 : unmanaged
             where T2 : unmanaged
             where T3 : unmanaged
@@ -500,11 +556,13 @@ namespace IwasmUnity.Capi
             where T12 : unmanaged
             where T13 : unmanaged
             where T14 : unmanaged
+            where TResult : unmanaged
         {
             const int argCount = 14;
-            const int retCount = 0;
+            const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
+            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
             Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
             Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
             Ensure(TypeHelper.GetValueType<T3>() == _argTypes[2], MismatchedArgTypeError);
@@ -538,11 +596,13 @@ namespace IwasmUnity.Capi
                     wasm_val_t.From(a13),
                     wasm_val_t.From(a14),
                 };
-                CallUnchecked(args, argCount, null, retCount);
+                wasm_val_t ret;
+                CallUnchecked(args, argCount, &ret, retCount);
+                return ret.GetValueAs<TResult>();
             };
         }
 
-        public unsafe Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> ToAction<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>()
+        public unsafe Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult> ToFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>()
             where T1 : unmanaged
             where T2 : unmanaged
             where T3 : unmanaged
@@ -558,11 +618,13 @@ namespace IwasmUnity.Capi
             where T13 : unmanaged
             where T14 : unmanaged
             where T15 : unmanaged
+            where TResult : unmanaged
         {
             const int argCount = 15;
-            const int retCount = 0;
+            const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
+            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
             Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
             Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
             Ensure(TypeHelper.GetValueType<T3>() == _argTypes[2], MismatchedArgTypeError);
@@ -598,11 +660,13 @@ namespace IwasmUnity.Capi
                     wasm_val_t.From(a14),
                     wasm_val_t.From(a15),
                 };
-                CallUnchecked(args, argCount, null, retCount);
+                wasm_val_t ret;
+                CallUnchecked(args, argCount, &ret, retCount);
+                return ret.GetValueAs<TResult>();
             };
         }
 
-        public unsafe Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16> ToAction<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>()
+        public unsafe Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TResult> ToFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TResult>()
             where T1 : unmanaged
             where T2 : unmanaged
             where T3 : unmanaged
@@ -619,11 +683,13 @@ namespace IwasmUnity.Capi
             where T14 : unmanaged
             where T15 : unmanaged
             where T16 : unmanaged
+            where TResult : unmanaged
         {
             const int argCount = 16;
-            const int retCount = 0;
+            const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
+            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
             Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
             Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
             Ensure(TypeHelper.GetValueType<T3>() == _argTypes[2], MismatchedArgTypeError);
@@ -661,7 +727,9 @@ namespace IwasmUnity.Capi
                     wasm_val_t.From(a15),
                     wasm_val_t.From(a16),
                 };
-                CallUnchecked(args, argCount, null, retCount);
+                wasm_val_t ret;
+                CallUnchecked(args, argCount, &ret, retCount);
+                return ret.GetValueAs<TResult>();
             };
         }
     }

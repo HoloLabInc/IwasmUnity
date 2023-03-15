@@ -2,7 +2,7 @@
 using System;
 using uint32_t = System.UInt32;
 
-namespace IwasmUnity.Capi
+namespace IwasmUnity
 {
     public unsafe sealed class Exports
     {

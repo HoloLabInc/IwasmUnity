@@ -2,7 +2,7 @@
 using System;
 using System.Text;
 
-namespace IwasmUnity.Capi
+namespace IwasmUnity
 {
     public unsafe sealed partial class Function
     {

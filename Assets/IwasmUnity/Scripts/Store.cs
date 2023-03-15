@@ -1,7 +1,7 @@
 ﻿#nullable enable
 using System;
 
-namespace IwasmUnity.Capi
+namespace IwasmUnity
 {
     public sealed class Store : IDisposable
     {
