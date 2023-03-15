@@ -55,7 +55,7 @@ namespace IwasmUnity.Capi
             return new Imports(this);
         }
 
-        public Instance CreateInstance(Imports imports, uint32_t stackSize = 32 * 1024, uint32_t heapSize = 0)
+        public Instance CreateInstance(Imports? imports, uint32_t stackSize = 32 * 1024, uint32_t heapSize = 0)
         {
             return new Instance(this, imports, stackSize, heapSize);
         }

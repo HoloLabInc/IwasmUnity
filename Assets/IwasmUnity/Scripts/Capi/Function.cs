@@ -101,6 +101,31 @@ namespace IwasmUnity.Capi
             };
         }
 
+        public unsafe Func<T1, T2, TResult> ToFunc<T1, T2, TResult>()
+            where T1 : unmanaged
+            where T2 : unmanaged
+            where TResult : unmanaged
+        {
+            const int argCount = 2;
+            const int retCount = 1;
+            Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
+            Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
+            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
+            Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
+            return (a1, a2) =>
+            {
+                var args = stackalloc wasm_val_t[argCount]
+                {
+                    wasm_val_t.From(a1),
+                    wasm_val_t.From(a2),
+                };
+                wasm_val_t ret;
+                CallUnchecked(args, argCount, &ret, retCount);
+                return ret.GetValueAs<TResult>();
+            };
+        }
+
         private const string MismatchedArgCountError = "Number of arguments is mismatched";
         private const string MismatchedRetCountError = "Number of returns is mismatched";
         private const string MismatchedRetTypeError = "Type of returns is mismatched";

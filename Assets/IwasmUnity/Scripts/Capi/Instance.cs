@@ -28,7 +28,7 @@ namespace IwasmUnity.Capi
 
         public Exports Exports => _exports;
 
-        internal unsafe Instance(Module module, Imports imports, uint32_t stackSize, uint32_t heapSize)
+        internal unsafe Instance(Module module, Imports? imports, uint32_t stackSize, uint32_t heapSize)
         {
             if (module.Store.IsDisposed)
             {
@@ -39,20 +39,31 @@ namespace IwasmUnity.Capi
                 throw new ObjectDisposedException(nameof(module));
             }
 
-            var externs = imports.GetExterns();
-            fixed (wasm_extern_t_ptr* data = externs)
+            wasm_instance_t_ptr instance;
+            if (imports != null)
             {
-                var importExternVec = new wasm_extern_vec_t(data, (uint)externs.Length);
-                var instance = IwasmCApi.wasm_instance_new_with_args(module.Store.StoreNative, module.ModuleNative, &importExternVec, null, stackSize, heapSize);
-                if (instance.IsNull)
+                var externs = imports.GetExterns();
+
+                fixed (wasm_extern_t_ptr* data = externs)
                 {
-                    throw new ArgumentException("Failed to create an instance.");
+                    var importExternVec = new wasm_extern_vec_t(data, (uint)externs.Length);
+                    instance = IwasmCApi.wasm_instance_new_with_args(module.Store.StoreNative, module.ModuleNative, &importExternVec, null, stackSize, heapSize);
                 }
-                _instance = instance;
+            }
+            else
+            {
+                var importExternVec = wasm_extern_vec_t.Empty;
+                instance = IwasmCApi.wasm_instance_new_with_args(module.Store.StoreNative, module.ModuleNative, &importExternVec, null, stackSize, heapSize);
             }
 
-            imports.SetInstance(this);
+            if (instance.IsNull)
+            {
+                throw new ArgumentException("Failed to create an instance.");
+            }
+            _instance = instance;
+
             _exports = new Exports(this);
+            imports?.SetInstance(this);
         }
 
         public void Dispose()
