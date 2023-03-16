@@ -9,6 +9,9 @@ namespace IwasmUnity.Sample
 {
     public sealed class Sample : MonoBehaviour
     {
+        private Engine _engine;
+        private Store _store;
+
         [SerializeField]
         private Button _button;
         [SerializeField]
@@ -20,9 +23,12 @@ namespace IwasmUnity.Sample
         {
             try
             {
-                using var engine = new Engine();
-                using var store = new Store(engine);
-                using var module = Module.CreateFromWasm(store, _wasm);
+                if (_engine == null)
+                {
+                    _engine = new Engine();
+                    _store = new Store(_engine);
+                }
+                using var module = Module.CreateFromWasm(_store, _wasm);
                 var imports = module.CreateImports();
                 imports.ImportAction("env", "hello", context =>
                 {
@@ -52,6 +58,12 @@ namespace IwasmUnity.Sample
                 _button.interactable = true;
                 _button.onClick.AddListener(HelloSample);
             }));
+        }
+
+        private void OnDestroy()
+        {
+            _store?.Dispose();
+            _engine?.Dispose();
         }
 
         private IEnumerator LoadStreamingAssets(string name, Action<byte[]> callback)
