@@ -375,7 +375,7 @@ namespace IwasmUnity
     internal static class TypeHelper
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static wasm_valkind_t GetValueType<T>() where T : unmanaged
+        public static wasm_valkind_t GetValueKind<T>() where T : unmanaged
         {
             return
                 typeof(T) == typeof(int) ? wasm_valkind_t.WASM_I32 :
@@ -386,9 +386,26 @@ namespace IwasmUnity
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static wasm_valtype_t GetValtype<T>() where T : unmanaged
+        public static wasm_valtype_t GetValuetype<T>() where T : unmanaged
         {
-            return new wasm_valtype_t(GetValueType<T>());
+            return new wasm_valtype_t(GetValueKind<T>());
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static wasm_valkind_t GetValueKind(Type type)
+        {
+            return
+                type == typeof(int) ? wasm_valkind_t.WASM_I32 :
+                type == typeof(long) ? wasm_valkind_t.WASM_I64 :
+                type == typeof(float) ? wasm_valkind_t.WASM_F32 :
+                type == typeof(double) ? wasm_valkind_t.WASM_F64 :
+                throw new ArgumentException($"Invalid type: {type.FullName}");
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static wasm_valtype_t GetValuetype(Type type)
+        {
+            return new wasm_valtype_t(GetValueKind(type));
         }
     }
 

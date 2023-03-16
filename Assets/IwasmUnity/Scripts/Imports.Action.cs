@@ -29,7 +29,7 @@ namespace IwasmUnity
             where T1 : unmanaged
         {
             const int ArgCount = 1;
-            var t1 = TypeHelper.GetValtype<T1>();
+            var t1 = TypeHelper.GetValuetype<T1>();
             var argTypes = stackalloc wasm_valtype_t*[ArgCount] { &t1 };
             var argTypeVec = new wasm_valtype_vec_t(argTypes, ArgCount);
             var resultTypeVec = wasm_valtype_vec_t.Empty;
@@ -55,8 +55,8 @@ namespace IwasmUnity
             where T2 : unmanaged
         {
             const int ArgCount = 2;
-            var t1 = TypeHelper.GetValtype<T1>();
-            var t2 = TypeHelper.GetValtype<T2>();
+            var t1 = TypeHelper.GetValuetype<T1>();
+            var t2 = TypeHelper.GetValuetype<T2>();
             var argTypes = stackalloc wasm_valtype_t*[ArgCount] { &t1, &t2 };
             var argTypeVec = new wasm_valtype_vec_t(argTypes, ArgCount);
             var resultTypeVec = wasm_valtype_vec_t.Empty;
@@ -84,9 +84,9 @@ namespace IwasmUnity
             where T3 : unmanaged
         {
             const int ArgCount = 3;
-            var t1 = TypeHelper.GetValtype<T1>();
-            var t2 = TypeHelper.GetValtype<T2>();
-            var t3 = TypeHelper.GetValtype<T3>();
+            var t1 = TypeHelper.GetValuetype<T1>();
+            var t2 = TypeHelper.GetValuetype<T2>();
+            var t3 = TypeHelper.GetValuetype<T3>();
             var argTypes = stackalloc wasm_valtype_t*[ArgCount] { &t1, &t2, &t3 };
             var argTypeVec = new wasm_valtype_vec_t(argTypes, ArgCount);
             var resultTypeVec = wasm_valtype_vec_t.Empty;
@@ -116,10 +116,10 @@ namespace IwasmUnity
             where T4 : unmanaged
         {
             const int ArgCount = 4;
-            var t1 = TypeHelper.GetValtype<T1>();
-            var t2 = TypeHelper.GetValtype<T2>();
-            var t3 = TypeHelper.GetValtype<T3>();
-            var t4 = TypeHelper.GetValtype<T4>();
+            var t1 = TypeHelper.GetValuetype<T1>();
+            var t2 = TypeHelper.GetValuetype<T2>();
+            var t3 = TypeHelper.GetValuetype<T3>();
+            var t4 = TypeHelper.GetValuetype<T4>();
             var argTypes = stackalloc wasm_valtype_t*[ArgCount] { &t1, &t2, &t3, &t4 };
             var argTypeVec = new wasm_valtype_vec_t(argTypes, ArgCount);
             var resultTypeVec = wasm_valtype_vec_t.Empty;
@@ -151,11 +151,11 @@ namespace IwasmUnity
             where T5 : unmanaged
         {
             const int ArgCount = 5;
-            var t1 = TypeHelper.GetValtype<T1>();
-            var t2 = TypeHelper.GetValtype<T2>();
-            var t3 = TypeHelper.GetValtype<T3>();
-            var t4 = TypeHelper.GetValtype<T4>();
-            var t5 = TypeHelper.GetValtype<T5>();
+            var t1 = TypeHelper.GetValuetype<T1>();
+            var t2 = TypeHelper.GetValuetype<T2>();
+            var t3 = TypeHelper.GetValuetype<T3>();
+            var t4 = TypeHelper.GetValuetype<T4>();
+            var t5 = TypeHelper.GetValuetype<T5>();
             var argTypes = stackalloc wasm_valtype_t*[ArgCount] { &t1, &t2, &t3, &t4, &t5 };
             var argTypeVec = new wasm_valtype_vec_t(argTypes, ArgCount);
             var resultTypeVec = wasm_valtype_vec_t.Empty;
@@ -189,12 +189,12 @@ namespace IwasmUnity
             where T6 : unmanaged
         {
             const int ArgCount = 6;
-            var t1 = TypeHelper.GetValtype<T1>();
-            var t2 = TypeHelper.GetValtype<T2>();
-            var t3 = TypeHelper.GetValtype<T3>();
-            var t4 = TypeHelper.GetValtype<T4>();
-            var t5 = TypeHelper.GetValtype<T5>();
-            var t6 = TypeHelper.GetValtype<T6>();
+            var t1 = TypeHelper.GetValuetype<T1>();
+            var t2 = TypeHelper.GetValuetype<T2>();
+            var t3 = TypeHelper.GetValuetype<T3>();
+            var t4 = TypeHelper.GetValuetype<T4>();
+            var t5 = TypeHelper.GetValuetype<T5>();
+            var t6 = TypeHelper.GetValuetype<T6>();
             var argTypes = stackalloc wasm_valtype_t*[ArgCount] { &t1, &t2, &t3, &t4, &t5, &t6 };
             var argTypeVec = new wasm_valtype_vec_t(argTypes, ArgCount);
             var resultTypeVec = wasm_valtype_vec_t.Empty;
@@ -230,13 +230,13 @@ namespace IwasmUnity
             where T7 : unmanaged
         {
             const int ArgCount = 7;
-            var t1 = TypeHelper.GetValtype<T1>();
-            var t2 = TypeHelper.GetValtype<T2>();
-            var t3 = TypeHelper.GetValtype<T3>();
-            var t4 = TypeHelper.GetValtype<T4>();
-            var t5 = TypeHelper.GetValtype<T5>();
-            var t6 = TypeHelper.GetValtype<T6>();
-            var t7 = TypeHelper.GetValtype<T7>();
+            var t1 = TypeHelper.GetValuetype<T1>();
+            var t2 = TypeHelper.GetValuetype<T2>();
+            var t3 = TypeHelper.GetValuetype<T3>();
+            var t4 = TypeHelper.GetValuetype<T4>();
+            var t5 = TypeHelper.GetValuetype<T5>();
+            var t6 = TypeHelper.GetValuetype<T6>();
+            var t7 = TypeHelper.GetValuetype<T7>();
             var argTypes = stackalloc wasm_valtype_t*[ArgCount] { &t1, &t2, &t3, &t4, &t5, &t6, &t7 };
             var argTypeVec = new wasm_valtype_vec_t(argTypes, ArgCount);
             var resultTypeVec = wasm_valtype_vec_t.Empty;
@@ -274,14 +274,14 @@ namespace IwasmUnity
             where T8 : unmanaged
         {
             const int ArgCount = 8;
-            var t1 = TypeHelper.GetValtype<T1>();
-            var t2 = TypeHelper.GetValtype<T2>();
-            var t3 = TypeHelper.GetValtype<T3>();
-            var t4 = TypeHelper.GetValtype<T4>();
-            var t5 = TypeHelper.GetValtype<T5>();
-            var t6 = TypeHelper.GetValtype<T6>();
-            var t7 = TypeHelper.GetValtype<T7>();
-            var t8 = TypeHelper.GetValtype<T8>();
+            var t1 = TypeHelper.GetValuetype<T1>();
+            var t2 = TypeHelper.GetValuetype<T2>();
+            var t3 = TypeHelper.GetValuetype<T3>();
+            var t4 = TypeHelper.GetValuetype<T4>();
+            var t5 = TypeHelper.GetValuetype<T5>();
+            var t6 = TypeHelper.GetValuetype<T6>();
+            var t7 = TypeHelper.GetValuetype<T7>();
+            var t8 = TypeHelper.GetValuetype<T8>();
             var argTypes = stackalloc wasm_valtype_t*[ArgCount] { &t1, &t2, &t3, &t4, &t5, &t6, &t7, &t8 };
             var argTypeVec = new wasm_valtype_vec_t(argTypes, ArgCount);
             var resultTypeVec = wasm_valtype_vec_t.Empty;
@@ -321,15 +321,15 @@ namespace IwasmUnity
             where T9 : unmanaged
         {
             const int ArgCount = 9;
-            var t1 = TypeHelper.GetValtype<T1>();
-            var t2 = TypeHelper.GetValtype<T2>();
-            var t3 = TypeHelper.GetValtype<T3>();
-            var t4 = TypeHelper.GetValtype<T4>();
-            var t5 = TypeHelper.GetValtype<T5>();
-            var t6 = TypeHelper.GetValtype<T6>();
-            var t7 = TypeHelper.GetValtype<T7>();
-            var t8 = TypeHelper.GetValtype<T8>();
-            var t9 = TypeHelper.GetValtype<T9>();
+            var t1 = TypeHelper.GetValuetype<T1>();
+            var t2 = TypeHelper.GetValuetype<T2>();
+            var t3 = TypeHelper.GetValuetype<T3>();
+            var t4 = TypeHelper.GetValuetype<T4>();
+            var t5 = TypeHelper.GetValuetype<T5>();
+            var t6 = TypeHelper.GetValuetype<T6>();
+            var t7 = TypeHelper.GetValuetype<T7>();
+            var t8 = TypeHelper.GetValuetype<T8>();
+            var t9 = TypeHelper.GetValuetype<T9>();
             var argTypes = stackalloc wasm_valtype_t*[ArgCount] { &t1, &t2, &t3, &t4, &t5, &t6, &t7, &t8, &t9 };
             var argTypeVec = new wasm_valtype_vec_t(argTypes, ArgCount);
             var resultTypeVec = wasm_valtype_vec_t.Empty;
@@ -371,16 +371,16 @@ namespace IwasmUnity
             where T10 : unmanaged
         {
             const int ArgCount = 10;
-            var t1 = TypeHelper.GetValtype<T1>();
-            var t2 = TypeHelper.GetValtype<T2>();
-            var t3 = TypeHelper.GetValtype<T3>();
-            var t4 = TypeHelper.GetValtype<T4>();
-            var t5 = TypeHelper.GetValtype<T5>();
-            var t6 = TypeHelper.GetValtype<T6>();
-            var t7 = TypeHelper.GetValtype<T7>();
-            var t8 = TypeHelper.GetValtype<T8>();
-            var t9 = TypeHelper.GetValtype<T9>();
-            var t10 = TypeHelper.GetValtype<T10>();
+            var t1 = TypeHelper.GetValuetype<T1>();
+            var t2 = TypeHelper.GetValuetype<T2>();
+            var t3 = TypeHelper.GetValuetype<T3>();
+            var t4 = TypeHelper.GetValuetype<T4>();
+            var t5 = TypeHelper.GetValuetype<T5>();
+            var t6 = TypeHelper.GetValuetype<T6>();
+            var t7 = TypeHelper.GetValuetype<T7>();
+            var t8 = TypeHelper.GetValuetype<T8>();
+            var t9 = TypeHelper.GetValuetype<T9>();
+            var t10 = TypeHelper.GetValuetype<T10>();
             var argTypes = stackalloc wasm_valtype_t*[ArgCount] { &t1, &t2, &t3, &t4, &t5, &t6, &t7, &t8, &t9, &t10 };
             var argTypeVec = new wasm_valtype_vec_t(argTypes, ArgCount);
             var resultTypeVec = wasm_valtype_vec_t.Empty;
@@ -424,17 +424,17 @@ namespace IwasmUnity
             where T11 : unmanaged
         {
             const int ArgCount = 11;
-            var t1 = TypeHelper.GetValtype<T1>();
-            var t2 = TypeHelper.GetValtype<T2>();
-            var t3 = TypeHelper.GetValtype<T3>();
-            var t4 = TypeHelper.GetValtype<T4>();
-            var t5 = TypeHelper.GetValtype<T5>();
-            var t6 = TypeHelper.GetValtype<T6>();
-            var t7 = TypeHelper.GetValtype<T7>();
-            var t8 = TypeHelper.GetValtype<T8>();
-            var t9 = TypeHelper.GetValtype<T9>();
-            var t10 = TypeHelper.GetValtype<T10>();
-            var t11 = TypeHelper.GetValtype<T11>();
+            var t1 = TypeHelper.GetValuetype<T1>();
+            var t2 = TypeHelper.GetValuetype<T2>();
+            var t3 = TypeHelper.GetValuetype<T3>();
+            var t4 = TypeHelper.GetValuetype<T4>();
+            var t5 = TypeHelper.GetValuetype<T5>();
+            var t6 = TypeHelper.GetValuetype<T6>();
+            var t7 = TypeHelper.GetValuetype<T7>();
+            var t8 = TypeHelper.GetValuetype<T8>();
+            var t9 = TypeHelper.GetValuetype<T9>();
+            var t10 = TypeHelper.GetValuetype<T10>();
+            var t11 = TypeHelper.GetValuetype<T11>();
             var argTypes = stackalloc wasm_valtype_t*[ArgCount] { &t1, &t2, &t3, &t4, &t5, &t6, &t7, &t8, &t9, &t10, &t11 };
             var argTypeVec = new wasm_valtype_vec_t(argTypes, ArgCount);
             var resultTypeVec = wasm_valtype_vec_t.Empty;
@@ -480,18 +480,18 @@ namespace IwasmUnity
             where T12 : unmanaged
         {
             const int ArgCount = 12;
-            var t1 = TypeHelper.GetValtype<T1>();
-            var t2 = TypeHelper.GetValtype<T2>();
-            var t3 = TypeHelper.GetValtype<T3>();
-            var t4 = TypeHelper.GetValtype<T4>();
-            var t5 = TypeHelper.GetValtype<T5>();
-            var t6 = TypeHelper.GetValtype<T6>();
-            var t7 = TypeHelper.GetValtype<T7>();
-            var t8 = TypeHelper.GetValtype<T8>();
-            var t9 = TypeHelper.GetValtype<T9>();
-            var t10 = TypeHelper.GetValtype<T10>();
-            var t11 = TypeHelper.GetValtype<T11>();
-            var t12 = TypeHelper.GetValtype<T12>();
+            var t1 = TypeHelper.GetValuetype<T1>();
+            var t2 = TypeHelper.GetValuetype<T2>();
+            var t3 = TypeHelper.GetValuetype<T3>();
+            var t4 = TypeHelper.GetValuetype<T4>();
+            var t5 = TypeHelper.GetValuetype<T5>();
+            var t6 = TypeHelper.GetValuetype<T6>();
+            var t7 = TypeHelper.GetValuetype<T7>();
+            var t8 = TypeHelper.GetValuetype<T8>();
+            var t9 = TypeHelper.GetValuetype<T9>();
+            var t10 = TypeHelper.GetValuetype<T10>();
+            var t11 = TypeHelper.GetValuetype<T11>();
+            var t12 = TypeHelper.GetValuetype<T12>();
             var argTypes = stackalloc wasm_valtype_t*[ArgCount] { &t1, &t2, &t3, &t4, &t5, &t6, &t7, &t8, &t9, &t10, &t11, &t12 };
             var argTypeVec = new wasm_valtype_vec_t(argTypes, ArgCount);
             var resultTypeVec = wasm_valtype_vec_t.Empty;
@@ -539,19 +539,19 @@ namespace IwasmUnity
             where T13 : unmanaged
         {
             const int ArgCount = 13;
-            var t1 = TypeHelper.GetValtype<T1>();
-            var t2 = TypeHelper.GetValtype<T2>();
-            var t3 = TypeHelper.GetValtype<T3>();
-            var t4 = TypeHelper.GetValtype<T4>();
-            var t5 = TypeHelper.GetValtype<T5>();
-            var t6 = TypeHelper.GetValtype<T6>();
-            var t7 = TypeHelper.GetValtype<T7>();
-            var t8 = TypeHelper.GetValtype<T8>();
-            var t9 = TypeHelper.GetValtype<T9>();
-            var t10 = TypeHelper.GetValtype<T10>();
-            var t11 = TypeHelper.GetValtype<T11>();
-            var t12 = TypeHelper.GetValtype<T12>();
-            var t13 = TypeHelper.GetValtype<T13>();
+            var t1 = TypeHelper.GetValuetype<T1>();
+            var t2 = TypeHelper.GetValuetype<T2>();
+            var t3 = TypeHelper.GetValuetype<T3>();
+            var t4 = TypeHelper.GetValuetype<T4>();
+            var t5 = TypeHelper.GetValuetype<T5>();
+            var t6 = TypeHelper.GetValuetype<T6>();
+            var t7 = TypeHelper.GetValuetype<T7>();
+            var t8 = TypeHelper.GetValuetype<T8>();
+            var t9 = TypeHelper.GetValuetype<T9>();
+            var t10 = TypeHelper.GetValuetype<T10>();
+            var t11 = TypeHelper.GetValuetype<T11>();
+            var t12 = TypeHelper.GetValuetype<T12>();
+            var t13 = TypeHelper.GetValuetype<T13>();
             var argTypes = stackalloc wasm_valtype_t*[ArgCount] { &t1, &t2, &t3, &t4, &t5, &t6, &t7, &t8, &t9, &t10, &t11, &t12, &t13 };
             var argTypeVec = new wasm_valtype_vec_t(argTypes, ArgCount);
             var resultTypeVec = wasm_valtype_vec_t.Empty;
@@ -601,20 +601,20 @@ namespace IwasmUnity
             where T14 : unmanaged
         {
             const int ArgCount = 14;
-            var t1 = TypeHelper.GetValtype<T1>();
-            var t2 = TypeHelper.GetValtype<T2>();
-            var t3 = TypeHelper.GetValtype<T3>();
-            var t4 = TypeHelper.GetValtype<T4>();
-            var t5 = TypeHelper.GetValtype<T5>();
-            var t6 = TypeHelper.GetValtype<T6>();
-            var t7 = TypeHelper.GetValtype<T7>();
-            var t8 = TypeHelper.GetValtype<T8>();
-            var t9 = TypeHelper.GetValtype<T9>();
-            var t10 = TypeHelper.GetValtype<T10>();
-            var t11 = TypeHelper.GetValtype<T11>();
-            var t12 = TypeHelper.GetValtype<T12>();
-            var t13 = TypeHelper.GetValtype<T13>();
-            var t14 = TypeHelper.GetValtype<T14>();
+            var t1 = TypeHelper.GetValuetype<T1>();
+            var t2 = TypeHelper.GetValuetype<T2>();
+            var t3 = TypeHelper.GetValuetype<T3>();
+            var t4 = TypeHelper.GetValuetype<T4>();
+            var t5 = TypeHelper.GetValuetype<T5>();
+            var t6 = TypeHelper.GetValuetype<T6>();
+            var t7 = TypeHelper.GetValuetype<T7>();
+            var t8 = TypeHelper.GetValuetype<T8>();
+            var t9 = TypeHelper.GetValuetype<T9>();
+            var t10 = TypeHelper.GetValuetype<T10>();
+            var t11 = TypeHelper.GetValuetype<T11>();
+            var t12 = TypeHelper.GetValuetype<T12>();
+            var t13 = TypeHelper.GetValuetype<T13>();
+            var t14 = TypeHelper.GetValuetype<T14>();
             var argTypes = stackalloc wasm_valtype_t*[ArgCount] { &t1, &t2, &t3, &t4, &t5, &t6, &t7, &t8, &t9, &t10, &t11, &t12, &t13, &t14 };
             var argTypeVec = new wasm_valtype_vec_t(argTypes, ArgCount);
             var resultTypeVec = wasm_valtype_vec_t.Empty;
@@ -666,21 +666,21 @@ namespace IwasmUnity
             where T15 : unmanaged
         {
             const int ArgCount = 15;
-            var t1 = TypeHelper.GetValtype<T1>();
-            var t2 = TypeHelper.GetValtype<T2>();
-            var t3 = TypeHelper.GetValtype<T3>();
-            var t4 = TypeHelper.GetValtype<T4>();
-            var t5 = TypeHelper.GetValtype<T5>();
-            var t6 = TypeHelper.GetValtype<T6>();
-            var t7 = TypeHelper.GetValtype<T7>();
-            var t8 = TypeHelper.GetValtype<T8>();
-            var t9 = TypeHelper.GetValtype<T9>();
-            var t10 = TypeHelper.GetValtype<T10>();
-            var t11 = TypeHelper.GetValtype<T11>();
-            var t12 = TypeHelper.GetValtype<T12>();
-            var t13 = TypeHelper.GetValtype<T13>();
-            var t14 = TypeHelper.GetValtype<T14>();
-            var t15 = TypeHelper.GetValtype<T15>();
+            var t1 = TypeHelper.GetValuetype<T1>();
+            var t2 = TypeHelper.GetValuetype<T2>();
+            var t3 = TypeHelper.GetValuetype<T3>();
+            var t4 = TypeHelper.GetValuetype<T4>();
+            var t5 = TypeHelper.GetValuetype<T5>();
+            var t6 = TypeHelper.GetValuetype<T6>();
+            var t7 = TypeHelper.GetValuetype<T7>();
+            var t8 = TypeHelper.GetValuetype<T8>();
+            var t9 = TypeHelper.GetValuetype<T9>();
+            var t10 = TypeHelper.GetValuetype<T10>();
+            var t11 = TypeHelper.GetValuetype<T11>();
+            var t12 = TypeHelper.GetValuetype<T12>();
+            var t13 = TypeHelper.GetValuetype<T13>();
+            var t14 = TypeHelper.GetValuetype<T14>();
+            var t15 = TypeHelper.GetValuetype<T15>();
             var argTypes = stackalloc wasm_valtype_t*[ArgCount] { &t1, &t2, &t3, &t4, &t5, &t6, &t7, &t8, &t9, &t10, &t11, &t12, &t13, &t14, &t15 };
             var argTypeVec = new wasm_valtype_vec_t(argTypes, ArgCount);
             var resultTypeVec = wasm_valtype_vec_t.Empty;

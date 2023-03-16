@@ -27,28 +27,6 @@ namespace IwasmUnity.Sample
 
         private void Start()
         {
-            //StartCoroutine(LoadStreamingAssets("hello.wasm", wasm =>
-            //{
-            //    Hello.RunSample(wasm, () =>
-            //    {
-            //        _text.text = "hello !!";
-            //    });
-            //}));
-
-            //StartCoroutine(LoadStreamingAssets("memory_sample.wasm", wasm =>
-            //{
-            //    try
-            //    {
-            //        MemorySample.RunSample(wasm);
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        _text.text = ex.ToString();
-            //        throw;
-            //    }
-            //    _text.text = "ok!!";
-            //}));
-
             StartCoroutine(LoadStreamingAssets("hello.wasm", wasm =>
             {
                 try
@@ -57,14 +35,27 @@ namespace IwasmUnity.Sample
                     using var store = new Store(engine);
                     using var module = Module.CreateFromWasm(store, wasm);
                     var imports = module.CreateImports();
-                    imports.ImportAction("", "hello", context =>
+                    //imports.ImportAction("env", "hello", context =>
+                    //{
+                    //    var now = DateTime.UtcNow.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'");
+                    //    var message = $"hello from C# ({now})";
+                    //    Debug.Log(message);
+                    //    _text.text = message;
+                    //});
+
+
+                    imports.ImportUntyped("env", "hello", new Action<ImportedContext, int>((context, _) =>
                     {
-                        var message = "hello from C#";
+                        var now = DateTime.UtcNow.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'");
+                        var message = $"hello from C# ({now})";
                         Debug.Log(message);
                         _text.text = message;
-                    });
+                    }));
+
+
                     using var instance = module.CreateInstance(imports);
-                    var run = instance.Exports.GetFunction("run").ToAction();
+                    //var run = instance.Exports.GetFunction("run").ToAction();
+                    var run = instance.Exports.GetFunction("run").ToUntypedDelegate();
                     run.Invoke();
                 }
                 catch (Exception ex)
@@ -73,60 +64,6 @@ namespace IwasmUnity.Sample
                     throw;
                 }
             }));
-
-            //StartCoroutine(LoadStreamingAssets("add_sample.wasm", wasm =>
-            //{
-            //    try
-            //    {
-            //        using var engine = new Engine();
-            //        using var store = new Store(engine);
-            //        using var module = Module.CreateFromWasm(store, wasm);
-            //        using var instance = module.CreateInstance(null);
-            //        var add = instance.Exports.GetFunction("add").ToFunc<int, int, int>();
-
-            //        var x = 10;
-            //        var y = 20;
-            //        var ans = add.Invoke(x, y);
-            //        _text.text = $"{x} + {y} = {ans}";
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        _text.text = ex.ToString();
-            //        throw;
-            //    }
-            //}));
-
-            //StartCoroutine(LoadStreamingAssets("WasiCsTest.wasm", wasm =>
-            //{
-            //    try
-            //    {
-            //        using var engine = new Engine();
-            //        using var store = new Store(engine);
-            //        using var module = Module.CreateFromWasm(store, wasm);
-            //        using var instance = module.CreateInstance(null, stackSize: 2 * 1024 * 1024);
-            //        var main = instance.Exports.GetFunction("_start").ToAction();
-            //        main.Invoke();
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        _text.text = ex.ToString();
-            //        throw;
-            //    }
-            //}));
-
-            //StartCoroutine(LoadStreamingAssets("add_sample.wasm", wasm =>
-            //{
-            //    try
-            //    {
-            //        AddSample.RunSample(wasm);
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        _text.text = ex.ToString();
-            //        throw;
-            //    }
-            //    _text.text = "ok!!";
-            //}));
 
             return;
 

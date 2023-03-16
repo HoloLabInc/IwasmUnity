@@ -1,4 +1,4 @@
 (module
-  (func $hello (import "" "hello"))
+  (func $hello (import "env" "hello"))
   (func (export "run") (call $hello))
 )
