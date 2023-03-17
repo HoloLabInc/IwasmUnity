@@ -26,7 +26,7 @@ namespace IwasmUnity
             }
             finally
             {
-                IwasmCApi.wasm_functype_delete(functype);
+                // IwasmCApi.wasm_functype_delete(functype);
             }
         }
 
@@ -56,7 +56,7 @@ namespace IwasmUnity
             }
             finally
             {
-                IwasmCApi.wasm_functype_delete(functype);
+                // IwasmCApi.wasm_functype_delete(functype);
             }
         }
 
@@ -89,7 +89,7 @@ namespace IwasmUnity
             }
             finally
             {
-                IwasmCApi.wasm_functype_delete(functype);
+                // IwasmCApi.wasm_functype_delete(functype);
             }
         }
 
@@ -125,7 +125,7 @@ namespace IwasmUnity
             }
             finally
             {
-                IwasmCApi.wasm_functype_delete(functype);
+                // IwasmCApi.wasm_functype_delete(functype);
             }
         }
 
@@ -164,7 +164,7 @@ namespace IwasmUnity
             }
             finally
             {
-                IwasmCApi.wasm_functype_delete(functype);
+                // IwasmCApi.wasm_functype_delete(functype);
             }
         }
 
@@ -206,7 +206,7 @@ namespace IwasmUnity
             }
             finally
             {
-                IwasmCApi.wasm_functype_delete(functype);
+                // IwasmCApi.wasm_functype_delete(functype);
             }
         }
 
@@ -251,7 +251,7 @@ namespace IwasmUnity
             }
             finally
             {
-                IwasmCApi.wasm_functype_delete(functype);
+                // IwasmCApi.wasm_functype_delete(functype);
             }
         }
 
@@ -299,7 +299,7 @@ namespace IwasmUnity
             }
             finally
             {
-                IwasmCApi.wasm_functype_delete(functype);
+                // IwasmCApi.wasm_functype_delete(functype);
             }
         }
 
@@ -350,7 +350,7 @@ namespace IwasmUnity
             }
             finally
             {
-                IwasmCApi.wasm_functype_delete(functype);
+                // IwasmCApi.wasm_functype_delete(functype);
             }
         }
 
@@ -404,7 +404,7 @@ namespace IwasmUnity
             }
             finally
             {
-                IwasmCApi.wasm_functype_delete(functype);
+                // IwasmCApi.wasm_functype_delete(functype);
             }
         }
 
@@ -461,7 +461,7 @@ namespace IwasmUnity
             }
             finally
             {
-                IwasmCApi.wasm_functype_delete(functype);
+                // IwasmCApi.wasm_functype_delete(functype);
             }
         }
 
@@ -521,7 +521,7 @@ namespace IwasmUnity
             }
             finally
             {
-                IwasmCApi.wasm_functype_delete(functype);
+                // IwasmCApi.wasm_functype_delete(functype);
             }
         }
 
@@ -584,7 +584,7 @@ namespace IwasmUnity
             }
             finally
             {
-                IwasmCApi.wasm_functype_delete(functype);
+                // IwasmCApi.wasm_functype_delete(functype);
             }
         }
 
@@ -650,7 +650,7 @@ namespace IwasmUnity
             }
             finally
             {
-                IwasmCApi.wasm_functype_delete(functype);
+                // IwasmCApi.wasm_functype_delete(functype);
             }
         }
 
@@ -719,7 +719,7 @@ namespace IwasmUnity
             }
             finally
             {
-                IwasmCApi.wasm_functype_delete(functype);
+                // IwasmCApi.wasm_functype_delete(functype);
             }
         }
 
@@ -791,7 +791,7 @@ namespace IwasmUnity
             }
             finally
             {
-                IwasmCApi.wasm_functype_delete(functype);
+                // IwasmCApi.wasm_functype_delete(functype);
             }
         }
     }

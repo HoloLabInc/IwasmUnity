@@ -35,6 +35,13 @@ namespace IwasmUnity
 
         internal wasm_extern_t_ptr[] GetExterns()
         {
+            for (int i = 0; i < _externArray.Length; i++)
+            {
+                if (_externArray[i].IsNull)
+                {
+                    throw new InvalidOperationException($"extern[{i}] is not imported");
+                }
+            }
             return _externArray.ToArray();
         }
 
@@ -117,7 +124,7 @@ namespace IwasmUnity
                 }
                 finally
                 {
-                    IwasmCApi.wasm_functype_delete(functype);
+                    // IwasmCApi.wasm_functype_delete(functype);
                 }
             }
         }
