@@ -21,7 +21,7 @@ namespace IwasmUnity
                     var import = (Func<ImportedContext, TResult>)s.Import;
                     var result = import.Invoke(
                         s.AsContext());
-                    s.SetResult(0, result);
+                    s.PushResult(result);
                 });
             }
             finally
@@ -51,7 +51,7 @@ namespace IwasmUnity
                     var result = import.Invoke(
                         s.AsContext(),
                         s.Arg<T1>(0));
-                    s.SetResult(0, result);
+                    s.PushResult(result);
                 });
             }
             finally
@@ -84,7 +84,7 @@ namespace IwasmUnity
                         s.AsContext(),
                         s.Arg<T1>(0),
                         s.Arg<T2>(1));
-                    s.SetResult(0, result);
+                    s.PushResult(result);
                 });
             }
             finally
@@ -120,7 +120,7 @@ namespace IwasmUnity
                         s.Arg<T1>(0),
                         s.Arg<T2>(1),
                         s.Arg<T3>(2));
-                    s.SetResult(0, result);
+                    s.PushResult(result);
                 });
             }
             finally
@@ -159,7 +159,7 @@ namespace IwasmUnity
                         s.Arg<T2>(1),
                         s.Arg<T3>(2),
                         s.Arg<T4>(3));
-                    s.SetResult(0, result);
+                    s.PushResult(result);
                 });
             }
             finally
@@ -201,7 +201,7 @@ namespace IwasmUnity
                         s.Arg<T3>(2),
                         s.Arg<T4>(3),
                         s.Arg<T5>(4));
-                    s.SetResult(0, result);
+                    s.PushResult(result);
                 });
             }
             finally
@@ -246,7 +246,7 @@ namespace IwasmUnity
                         s.Arg<T4>(3),
                         s.Arg<T5>(4),
                         s.Arg<T6>(5));
-                    s.SetResult(0, result);
+                    s.PushResult(result);
                 });
             }
             finally
@@ -294,7 +294,7 @@ namespace IwasmUnity
                         s.Arg<T5>(4),
                         s.Arg<T6>(5),
                         s.Arg<T7>(6));
-                    s.SetResult(0, result);
+                    s.PushResult(result);
                 });
             }
             finally
@@ -345,7 +345,7 @@ namespace IwasmUnity
                         s.Arg<T6>(5),
                         s.Arg<T7>(6),
                         s.Arg<T8>(7));
-                    s.SetResult(0, result);
+                    s.PushResult(result);
                 });
             }
             finally
@@ -399,7 +399,7 @@ namespace IwasmUnity
                         s.Arg<T7>(6),
                         s.Arg<T8>(7),
                         s.Arg<T9>(8));
-                    s.SetResult(0, result);
+                    s.PushResult(result);
                 });
             }
             finally
@@ -456,7 +456,7 @@ namespace IwasmUnity
                         s.Arg<T8>(7),
                         s.Arg<T9>(8),
                         s.Arg<T10>(9));
-                    s.SetResult(0, result);
+                    s.PushResult(result);
                 });
             }
             finally
@@ -516,7 +516,7 @@ namespace IwasmUnity
                         s.Arg<T9>(8),
                         s.Arg<T10>(9),
                         s.Arg<T11>(10));
-                    s.SetResult(0, result);
+                    s.PushResult(result);
                 });
             }
             finally
@@ -579,7 +579,7 @@ namespace IwasmUnity
                         s.Arg<T10>(9),
                         s.Arg<T11>(10),
                         s.Arg<T12>(11));
-                    s.SetResult(0, result);
+                    s.PushResult(result);
                 });
             }
             finally
@@ -645,7 +645,7 @@ namespace IwasmUnity
                         s.Arg<T11>(10),
                         s.Arg<T12>(11),
                         s.Arg<T13>(12));
-                    s.SetResult(0, result);
+                    s.PushResult(result);
                 });
             }
             finally
@@ -714,7 +714,7 @@ namespace IwasmUnity
                         s.Arg<T12>(11),
                         s.Arg<T13>(12),
                         s.Arg<T14>(13));
-                    s.SetResult(0, result);
+                    s.PushResult(result);
                 });
             }
             finally
@@ -786,7 +786,7 @@ namespace IwasmUnity
                         s.Arg<T13>(12),
                         s.Arg<T14>(13),
                         s.Arg<T15>(14));
-                    s.SetResult(0, result);
+                    s.PushResult(result);
                 });
             }
             finally

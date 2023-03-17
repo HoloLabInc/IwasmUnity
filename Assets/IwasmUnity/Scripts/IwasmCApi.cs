@@ -323,13 +323,13 @@ namespace IwasmUnity
         }
     }
 
-    internal unsafe readonly struct wasm_val_vec_t
+    internal unsafe struct wasm_val_vec_t
     {
-        public readonly size_t size;
-        public readonly wasm_val_t* data;
-        public readonly size_t num_elems;
-        public readonly size_t size_of_elem;
-        public readonly void* _lock;
+        public size_t size;
+        public wasm_val_t* data;
+        public size_t num_elems;
+        public size_t size_of_elem;
+        public void* _lock;
 
         public wasm_val_vec_t(wasm_val_t* data, uint dataLen)
         {

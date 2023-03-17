@@ -43,7 +43,7 @@ namespace IwasmUnity
                 Marshal.GetFunctionPointerForDelegate(_onImportedCallback),
                 (void*)key,
                 null);
-            var data = new ImportedData(import, onInvoke);
+            var data = new ImportedData(import, functype.parameters->num_elems.ToUInt32(), functype.results->num_elems.ToUInt32(), onInvoke);
             _importedStore.TryAdd(key, data);
             ext = IwasmCApi.wasm_func_as_extern(f);
             instanceSetter = data.SetInstance;
@@ -67,12 +67,16 @@ namespace IwasmUnity
         internal sealed class ImportedData
         {
             private readonly Delegate _import;
+            private readonly uint _argCount;
+            private readonly uint _resultCount;
             private readonly Action<ImportInvocationState> _onInvoke;
             private Instance? _instance;
 
-            public ImportedData(Delegate import, Action<ImportInvocationState> onInvoke)
+            public ImportedData(Delegate import, uint argCount, uint resultCount, Action<ImportInvocationState> onInvoke)
             {
                 _import = import;
+                _argCount = argCount;
+                _resultCount = resultCount;
                 _onInvoke = onInvoke;
             }
 
@@ -86,8 +90,9 @@ namespace IwasmUnity
                 var instance = _instance ?? throw new InvalidOperationException("instance is not set.");
 
                 var state = new ImportInvocationState(
-                    args->data, args->num_elems.ToUInt32(),
-                    results->data, results->size.ToUInt32(),
+                    _argCount, _resultCount,
+                    args,
+                    results,
                     instance,
                     _import);
                 _onInvoke.Invoke(state);

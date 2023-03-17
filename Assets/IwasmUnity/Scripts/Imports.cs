@@ -102,7 +102,7 @@ namespace IwasmUnity
                             var result = import.DynamicInvoke(s.AsContext());
                             if (hasResult)
                             {
-                                s.SetResultObject(0, result);
+                                s.PushResultObject(result);
                             }
                         }
                         else
@@ -117,7 +117,7 @@ namespace IwasmUnity
                             var result = import.DynamicInvoke(s.AsContext());
                             if (hasResult)
                             {
-                                s.SetResultObject(0, result);
+                                s.PushResultObject(result);
                             }
                         }
                     });
@@ -147,22 +147,24 @@ namespace IwasmUnity
 
     internal unsafe readonly struct ImportInvocationState
     {
-        private readonly wasm_val_t* Args;
+        private readonly wasm_val_vec_t* _args;
+        private readonly wasm_val_vec_t* _results;
         public readonly uint ArgCount;
-        private readonly wasm_val_t* Results;
         public readonly uint ResultCount;
         public readonly Instance Instance;
         public readonly Delegate Import;
 
         public ImportInvocationState(
-            wasm_val_t* args, uint argCount,
-            wasm_val_t* results, uint resultCount,
+            uint argCount,
+            uint resultCount,
+            wasm_val_vec_t* args,
+            wasm_val_vec_t* results,
             Instance instance,
             Delegate import)
         {
-            Args = args;
+            _args = args;
+            _results = results;
             ArgCount = argCount;
-            Results = results;
             ResultCount = resultCount;
             Instance = instance;
             Import = import;
@@ -174,7 +176,7 @@ namespace IwasmUnity
             {
                 ThrowArgOutOfRange(nameof(i));
             }
-            return Args[i].GetValueAs<T>();
+            return _args->data[i].GetValueAs<T>();
         }
 
         public object ArgObject(uint i)
@@ -183,25 +185,29 @@ namespace IwasmUnity
             {
                 ThrowArgOutOfRange(nameof(i));
             }
-            return Args[i].GetValueAsObject();
+            return _args->data[i].GetValueAsObject();
         }
 
-        public void SetResult<T>(uint i, T value) where T : unmanaged
+        public void PushResult<T>(T value) where T : unmanaged
         {
+            var i = _results->num_elems.ToUInt32();
             if (i >= ResultCount)
             {
-                ThrowArgOutOfRange(nameof(i));
+                ThrowTooManyResults();
             }
-            Results[i] = wasm_val_t.From<T>(value);
+            _results->data[i] = wasm_val_t.From<T>(value);
+            _results->num_elems += 1;
         }
 
-        public void SetResultObject(uint i, object value)
+        public void PushResultObject(object value)
         {
+            var i = _results->num_elems.ToUInt32();
             if (i >= ResultCount)
             {
-                ThrowArgOutOfRange(nameof(i));
+                ThrowTooManyResults();
             }
-            Results[i] = wasm_val_t.FromObject(value);
+            _results->data[i] = wasm_val_t.FromObject(value);
+            _results->num_elems += 1;
         }
 
         public ImportedContext AsContext()
@@ -210,6 +216,8 @@ namespace IwasmUnity
         }
 
         private static void ThrowArgOutOfRange(string message) => throw new ArgumentOutOfRangeException(message);
+
+        private static void ThrowTooManyResults() => throw new ArgumentOutOfRangeException("There are too many results.");
     }
 
     public readonly struct ImportedContext
