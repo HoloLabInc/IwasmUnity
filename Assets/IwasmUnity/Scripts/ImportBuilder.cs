@@ -87,7 +87,7 @@ namespace IwasmUnity
 
                 var state = new ImportInvocationState(
                     args->data, args->num_elems.ToUInt32(),
-                    results->data, results->num_elems.ToUInt32(),
+                    results->data, results->size.ToUInt32(),
                     instance,
                     _import);
                 _onInvoke.Invoke(state);
