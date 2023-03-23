@@ -12,7 +12,7 @@ namespace IwasmUnity
             const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
-            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
+            Ensure(TypeHelper.GetValueKind<TResult>() == _resultTypes[0], MismatchedRetTypeError);
             return () =>
             {
                 wasm_val_t ret;
@@ -29,8 +29,8 @@ namespace IwasmUnity
             const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
-            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
-            Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<TResult>() == _resultTypes[0], MismatchedRetTypeError);
+            Ensure(TypeHelper.GetValueKind<T1>() == _argTypes[0], MismatchedArgTypeError);
             return (a1) =>
             {
                 var args = stackalloc wasm_val_t[argCount]
@@ -52,9 +52,9 @@ namespace IwasmUnity
             const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
-            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
-            Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<TResult>() == _resultTypes[0], MismatchedRetTypeError);
+            Ensure(TypeHelper.GetValueKind<T1>() == _argTypes[0], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T2>() == _argTypes[1], MismatchedArgTypeError);
             return (a1, a2) =>
             {
                 var args = stackalloc wasm_val_t[argCount]
@@ -78,10 +78,10 @@ namespace IwasmUnity
             const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
-            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
-            Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T3>() == _argTypes[2], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<TResult>() == _resultTypes[0], MismatchedRetTypeError);
+            Ensure(TypeHelper.GetValueKind<T1>() == _argTypes[0], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T2>() == _argTypes[1], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T3>() == _argTypes[2], MismatchedArgTypeError);
             return (a1, a2, a3) =>
             {
                 var args = stackalloc wasm_val_t[argCount]
@@ -107,11 +107,11 @@ namespace IwasmUnity
             const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
-            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
-            Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T3>() == _argTypes[2], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T4>() == _argTypes[3], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<TResult>() == _resultTypes[0], MismatchedRetTypeError);
+            Ensure(TypeHelper.GetValueKind<T1>() == _argTypes[0], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T2>() == _argTypes[1], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T3>() == _argTypes[2], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T4>() == _argTypes[3], MismatchedArgTypeError);
             return (a1, a2, a3, a4) =>
             {
                 var args = stackalloc wasm_val_t[argCount]
@@ -139,12 +139,12 @@ namespace IwasmUnity
             const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
-            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
-            Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T3>() == _argTypes[2], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T4>() == _argTypes[3], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T5>() == _argTypes[4], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<TResult>() == _resultTypes[0], MismatchedRetTypeError);
+            Ensure(TypeHelper.GetValueKind<T1>() == _argTypes[0], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T2>() == _argTypes[1], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T3>() == _argTypes[2], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T4>() == _argTypes[3], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T5>() == _argTypes[4], MismatchedArgTypeError);
             return (a1, a2, a3, a4, a5) =>
             {
                 var args = stackalloc wasm_val_t[argCount]
@@ -174,13 +174,13 @@ namespace IwasmUnity
             const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
-            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
-            Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T3>() == _argTypes[2], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T4>() == _argTypes[3], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T5>() == _argTypes[4], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T6>() == _argTypes[5], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<TResult>() == _resultTypes[0], MismatchedRetTypeError);
+            Ensure(TypeHelper.GetValueKind<T1>() == _argTypes[0], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T2>() == _argTypes[1], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T3>() == _argTypes[2], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T4>() == _argTypes[3], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T5>() == _argTypes[4], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T6>() == _argTypes[5], MismatchedArgTypeError);
             return (a1, a2, a3, a4, a5, a6) =>
             {
                 var args = stackalloc wasm_val_t[argCount]
@@ -212,14 +212,14 @@ namespace IwasmUnity
             const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
-            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
-            Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T3>() == _argTypes[2], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T4>() == _argTypes[3], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T5>() == _argTypes[4], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T6>() == _argTypes[5], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T7>() == _argTypes[6], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<TResult>() == _resultTypes[0], MismatchedRetTypeError);
+            Ensure(TypeHelper.GetValueKind<T1>() == _argTypes[0], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T2>() == _argTypes[1], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T3>() == _argTypes[2], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T4>() == _argTypes[3], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T5>() == _argTypes[4], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T6>() == _argTypes[5], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T7>() == _argTypes[6], MismatchedArgTypeError);
             return (a1, a2, a3, a4, a5, a6, a7) =>
             {
                 var args = stackalloc wasm_val_t[argCount]
@@ -253,15 +253,15 @@ namespace IwasmUnity
             const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
-            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
-            Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T3>() == _argTypes[2], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T4>() == _argTypes[3], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T5>() == _argTypes[4], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T6>() == _argTypes[5], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T7>() == _argTypes[6], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T8>() == _argTypes[7], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<TResult>() == _resultTypes[0], MismatchedRetTypeError);
+            Ensure(TypeHelper.GetValueKind<T1>() == _argTypes[0], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T2>() == _argTypes[1], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T3>() == _argTypes[2], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T4>() == _argTypes[3], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T5>() == _argTypes[4], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T6>() == _argTypes[5], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T7>() == _argTypes[6], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T8>() == _argTypes[7], MismatchedArgTypeError);
             return (a1, a2, a3, a4, a5, a6, a7, a8) =>
             {
                 var args = stackalloc wasm_val_t[argCount]
@@ -297,16 +297,16 @@ namespace IwasmUnity
             const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
-            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
-            Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T3>() == _argTypes[2], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T4>() == _argTypes[3], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T5>() == _argTypes[4], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T6>() == _argTypes[5], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T7>() == _argTypes[6], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T8>() == _argTypes[7], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T9>() == _argTypes[8], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<TResult>() == _resultTypes[0], MismatchedRetTypeError);
+            Ensure(TypeHelper.GetValueKind<T1>() == _argTypes[0], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T2>() == _argTypes[1], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T3>() == _argTypes[2], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T4>() == _argTypes[3], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T5>() == _argTypes[4], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T6>() == _argTypes[5], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T7>() == _argTypes[6], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T8>() == _argTypes[7], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T9>() == _argTypes[8], MismatchedArgTypeError);
             return (a1, a2, a3, a4, a5, a6, a7, a8, a9) =>
             {
                 var args = stackalloc wasm_val_t[argCount]
@@ -344,17 +344,17 @@ namespace IwasmUnity
             const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
-            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
-            Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T3>() == _argTypes[2], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T4>() == _argTypes[3], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T5>() == _argTypes[4], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T6>() == _argTypes[5], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T7>() == _argTypes[6], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T8>() == _argTypes[7], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T9>() == _argTypes[8], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T10>() == _argTypes[9], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<TResult>() == _resultTypes[0], MismatchedRetTypeError);
+            Ensure(TypeHelper.GetValueKind<T1>() == _argTypes[0], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T2>() == _argTypes[1], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T3>() == _argTypes[2], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T4>() == _argTypes[3], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T5>() == _argTypes[4], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T6>() == _argTypes[5], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T7>() == _argTypes[6], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T8>() == _argTypes[7], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T9>() == _argTypes[8], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T10>() == _argTypes[9], MismatchedArgTypeError);
             return (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10) =>
             {
                 var args = stackalloc wasm_val_t[argCount]
@@ -394,18 +394,18 @@ namespace IwasmUnity
             const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
-            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
-            Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T3>() == _argTypes[2], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T4>() == _argTypes[3], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T5>() == _argTypes[4], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T6>() == _argTypes[5], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T7>() == _argTypes[6], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T8>() == _argTypes[7], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T9>() == _argTypes[8], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T10>() == _argTypes[9], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T11>() == _argTypes[10], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<TResult>() == _resultTypes[0], MismatchedRetTypeError);
+            Ensure(TypeHelper.GetValueKind<T1>() == _argTypes[0], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T2>() == _argTypes[1], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T3>() == _argTypes[2], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T4>() == _argTypes[3], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T5>() == _argTypes[4], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T6>() == _argTypes[5], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T7>() == _argTypes[6], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T8>() == _argTypes[7], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T9>() == _argTypes[8], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T10>() == _argTypes[9], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T11>() == _argTypes[10], MismatchedArgTypeError);
             return (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11) =>
             {
                 var args = stackalloc wasm_val_t[argCount]
@@ -447,19 +447,19 @@ namespace IwasmUnity
             const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
-            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
-            Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T3>() == _argTypes[2], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T4>() == _argTypes[3], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T5>() == _argTypes[4], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T6>() == _argTypes[5], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T7>() == _argTypes[6], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T8>() == _argTypes[7], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T9>() == _argTypes[8], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T10>() == _argTypes[9], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T11>() == _argTypes[10], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T12>() == _argTypes[11], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<TResult>() == _resultTypes[0], MismatchedRetTypeError);
+            Ensure(TypeHelper.GetValueKind<T1>() == _argTypes[0], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T2>() == _argTypes[1], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T3>() == _argTypes[2], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T4>() == _argTypes[3], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T5>() == _argTypes[4], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T6>() == _argTypes[5], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T7>() == _argTypes[6], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T8>() == _argTypes[7], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T9>() == _argTypes[8], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T10>() == _argTypes[9], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T11>() == _argTypes[10], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T12>() == _argTypes[11], MismatchedArgTypeError);
             return (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12) =>
             {
                 var args = stackalloc wasm_val_t[argCount]
@@ -503,20 +503,20 @@ namespace IwasmUnity
             const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
-            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
-            Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T3>() == _argTypes[2], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T4>() == _argTypes[3], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T5>() == _argTypes[4], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T6>() == _argTypes[5], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T7>() == _argTypes[6], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T8>() == _argTypes[7], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T9>() == _argTypes[8], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T10>() == _argTypes[9], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T11>() == _argTypes[10], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T12>() == _argTypes[11], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T13>() == _argTypes[12], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<TResult>() == _resultTypes[0], MismatchedRetTypeError);
+            Ensure(TypeHelper.GetValueKind<T1>() == _argTypes[0], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T2>() == _argTypes[1], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T3>() == _argTypes[2], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T4>() == _argTypes[3], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T5>() == _argTypes[4], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T6>() == _argTypes[5], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T7>() == _argTypes[6], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T8>() == _argTypes[7], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T9>() == _argTypes[8], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T10>() == _argTypes[9], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T11>() == _argTypes[10], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T12>() == _argTypes[11], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T13>() == _argTypes[12], MismatchedArgTypeError);
             return (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13) =>
             {
                 var args = stackalloc wasm_val_t[argCount]
@@ -562,21 +562,21 @@ namespace IwasmUnity
             const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
-            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
-            Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T3>() == _argTypes[2], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T4>() == _argTypes[3], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T5>() == _argTypes[4], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T6>() == _argTypes[5], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T7>() == _argTypes[6], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T8>() == _argTypes[7], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T9>() == _argTypes[8], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T10>() == _argTypes[9], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T11>() == _argTypes[10], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T12>() == _argTypes[11], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T13>() == _argTypes[12], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T14>() == _argTypes[13], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<TResult>() == _resultTypes[0], MismatchedRetTypeError);
+            Ensure(TypeHelper.GetValueKind<T1>() == _argTypes[0], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T2>() == _argTypes[1], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T3>() == _argTypes[2], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T4>() == _argTypes[3], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T5>() == _argTypes[4], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T6>() == _argTypes[5], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T7>() == _argTypes[6], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T8>() == _argTypes[7], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T9>() == _argTypes[8], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T10>() == _argTypes[9], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T11>() == _argTypes[10], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T12>() == _argTypes[11], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T13>() == _argTypes[12], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T14>() == _argTypes[13], MismatchedArgTypeError);
             return (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14) =>
             {
                 var args = stackalloc wasm_val_t[argCount]
@@ -624,22 +624,22 @@ namespace IwasmUnity
             const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
-            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
-            Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T3>() == _argTypes[2], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T4>() == _argTypes[3], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T5>() == _argTypes[4], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T6>() == _argTypes[5], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T7>() == _argTypes[6], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T8>() == _argTypes[7], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T9>() == _argTypes[8], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T10>() == _argTypes[9], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T11>() == _argTypes[10], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T12>() == _argTypes[11], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T13>() == _argTypes[12], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T14>() == _argTypes[13], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T15>() == _argTypes[14], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<TResult>() == _resultTypes[0], MismatchedRetTypeError);
+            Ensure(TypeHelper.GetValueKind<T1>() == _argTypes[0], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T2>() == _argTypes[1], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T3>() == _argTypes[2], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T4>() == _argTypes[3], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T5>() == _argTypes[4], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T6>() == _argTypes[5], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T7>() == _argTypes[6], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T8>() == _argTypes[7], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T9>() == _argTypes[8], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T10>() == _argTypes[9], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T11>() == _argTypes[10], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T12>() == _argTypes[11], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T13>() == _argTypes[12], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T14>() == _argTypes[13], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T15>() == _argTypes[14], MismatchedArgTypeError);
             return (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15) =>
             {
                 var args = stackalloc wasm_val_t[argCount]
@@ -689,23 +689,23 @@ namespace IwasmUnity
             const int retCount = 1;
             Ensure(_argTypes.Length == argCount, MismatchedArgCountError);
             Ensure(_resultTypes.Length == retCount, MismatchedRetCountError);
-            Ensure(TypeHelper.GetValueType<TResult>() == _resultTypes[0], MismatchedRetTypeError);
-            Ensure(TypeHelper.GetValueType<T1>() == _argTypes[0], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T2>() == _argTypes[1], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T3>() == _argTypes[2], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T4>() == _argTypes[3], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T5>() == _argTypes[4], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T6>() == _argTypes[5], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T7>() == _argTypes[6], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T8>() == _argTypes[7], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T9>() == _argTypes[8], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T10>() == _argTypes[9], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T11>() == _argTypes[10], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T12>() == _argTypes[11], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T13>() == _argTypes[12], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T14>() == _argTypes[13], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T15>() == _argTypes[14], MismatchedArgTypeError);
-            Ensure(TypeHelper.GetValueType<T16>() == _argTypes[15], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<TResult>() == _resultTypes[0], MismatchedRetTypeError);
+            Ensure(TypeHelper.GetValueKind<T1>() == _argTypes[0], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T2>() == _argTypes[1], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T3>() == _argTypes[2], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T4>() == _argTypes[3], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T5>() == _argTypes[4], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T6>() == _argTypes[5], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T7>() == _argTypes[6], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T8>() == _argTypes[7], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T9>() == _argTypes[8], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T10>() == _argTypes[9], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T11>() == _argTypes[10], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T12>() == _argTypes[11], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T13>() == _argTypes[12], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T14>() == _argTypes[13], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T15>() == _argTypes[14], MismatchedArgTypeError);
+            Ensure(TypeHelper.GetValueKind<T16>() == _argTypes[15], MismatchedArgTypeError);
             return (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16) =>
             {
                 var args = stackalloc wasm_val_t[argCount]

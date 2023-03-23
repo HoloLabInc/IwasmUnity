@@ -1,84 +1,69 @@
 ﻿#nullable enable
 using System;
+using uint32_t = System.UInt32;
+using size_t = System.UIntPtr;
 
 namespace IwasmUnity
 {
-    public unsafe sealed class Module : IDisposable
+    public sealed class Module : IDisposable
     {
-        private wasm_module_t _module;
-        private UnmanagedBytes _wasmBytes;
+        private wasm_module_t_ptr _module;
+        private Store _store;
 
-        internal wasm_module_t ModuleNative => _module;
+        internal wasm_module_t_ptr ModuleNative => _module;
+        internal Store Store => _store;
 
-        private Module(wasm_module_t module, UnmanagedBytes wasmBytes)
+        public bool IsDisposed => _module.IsNull;
+
+        private Module(Store store, wasm_module_t_ptr module)
         {
+            _store = store;
             _module = module;
-            _wasmBytes = wasmBytes;
         }
 
-        public void SetWasiArgs(string[] envs, string[] args)
+        public static unsafe Module CreateFromWasm(Store store, byte[] wasm)
         {
-            Iwasm.WasmRuntimeSetWasiArgs(this, envs, args);
-        }
+            if (store.IsDisposed)
+            {
+                throw new ObjectDisposedException(nameof(store));
+            }
 
-        public static Module LoadWasm(byte[] wasm)
-        {
-            if (wasm == null) { throw new ArgumentNullException(nameof(wasm)); }
-            var wasmBytes = UnmanagedBytes.CopyFrom(wasm);
+            wasm_byte_vec_t binary;
             try
             {
-                return LoadWasmPrivate(wasmBytes);
-            }
-            catch
-            {
-                wasmBytes.Dispose();
-                throw;
-            }
-        }
-
-        private static Module LoadWasmPrivate(UnmanagedBytes wasm)
-        {
-            var errBuf = NativeErrorHelper.GetErrorBuf();
-            try
-            {
-                wasm_module_t module;
-                fixed (byte* errBufPtr = errBuf)
+                fixed (byte* source = wasm)
                 {
-                    module = Iwasm.wasm_runtime_load((byte*)wasm.Ptr, (uint)wasm.Length, errBufPtr, (uint)errBuf.Length);
+                    uint len = (uint)wasm.Length;
+                    IwasmCApi.wasm_byte_vec_new_uninitialized(&binary, new size_t(len));
+                    Buffer.MemoryCopy(source, binary.data, len, len);
                 }
+                var module = IwasmCApi.wasm_module_new(store.StoreNative, &binary);
                 if (module.IsNull)
                 {
-                    var message = NativeErrorHelper.GetErrorString(errBuf);
-                    throw new IwasmException(message);
+                    throw new ArgumentException("Failed to create a module.");
                 }
-
-                // Don't free bytes data of wasm while the module is alive.
-                return new Module(module, wasm);
+                return new Module(store, module);
             }
             finally
             {
-                NativeErrorHelper.ReturnErrorBuf(errBuf);
+                IwasmCApi.wasm_byte_vec_delete(&binary);
             }
+        }
+
+        public Imports CreateImports()
+        {
+            return new Imports(this);
+        }
+
+        public Instance CreateInstance(Imports? imports, uint32_t stackSize = 32 * 1024, uint32_t heapSize = 0)
+        {
+            return new Instance(this, imports, stackSize, heapSize);
         }
 
         public void Dispose()
         {
-            if (_module.IsNull)
-            {
-                return;
-            }
-            Iwasm.wasm_runtime_unload(_module);
-            _module = wasm_module_t.Null;
-            _wasmBytes.Dispose();
-            _wasmBytes = UnmanagedBytes.Empty;
-        }
-
-        internal void ThrowIfDisposed()
-        {
-            if (_module.IsNull)
-            {
-                throw new ObjectDisposedException(nameof(Module));
-            }
+            IwasmCApi.wasm_module_delete(_module);
+            _module = wasm_module_t_ptr.Null;
         }
     }
 }

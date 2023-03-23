@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System;
+using System.Text;
 
 namespace IwasmUnity
 {
@@ -10,55 +11,36 @@ namespace IwasmUnity
         private const string MismatchedRetTypeError = "Type of returns is mismatched";
         private const string MismatchedArgTypeError = "Type of args is mismatched";
 
-        private readonly wasm_function_inst_t _func;
+        // [NOTE] no need to delete
+        private readonly wasm_func_t_ptr _f;
         private readonly wasm_valkind_t[] _argTypes;
         private readonly wasm_valkind_t[] _resultTypes;
-        private readonly Instance _instance;
 
-        internal Function(Instance instance, wasm_function_inst_t func)
+        internal Function(wasm_func_t_ptr f)
         {
-            var instanceNative = instance.InstanceNative;
-            var paramCount = Iwasm.wasm_func_get_param_count(func, instanceNative);
-            wasm_valkind_t[] argTypes;
-            if (paramCount > 0)
+            var functype = IwasmCApi.wasm_func_type(f);
+            var argCount = functype.parameters->num_elems.ToUInt32();
+            var argTypes = new wasm_valkind_t[argCount];
+            for (int i = 0; i < argTypes.Length; i++)
             {
-                argTypes = new wasm_valkind_t[paramCount];
-                fixed (wasm_valkind_t* p = argTypes)
-                {
-                    Iwasm.wasm_func_get_param_types(func, instanceNative, p);
-                }
-            }
-            else
-            {
-                argTypes = Array.Empty<wasm_valkind_t>();
-            }
-            var resultCount = Iwasm.wasm_func_get_result_count(func, instanceNative);
-            wasm_valkind_t[] resultTypes;
-            if (resultCount > 0)
-            {
-                resultTypes = new wasm_valkind_t[resultCount];
-                fixed (wasm_valkind_t* p = resultTypes)
-                {
-                    Iwasm.wasm_func_get_result_types(func, instanceNative, p);
-                }
-            }
-            else
-            {
-                resultTypes = Array.Empty<wasm_valkind_t>();
+                argTypes[i] = functype.parameters->data[i]->kind;
             }
 
-            _func = func;
+            var resultCount = functype.results->num_elems.ToUInt32();
+            var resultTypes = new wasm_valkind_t[resultCount];
+            for (int i = 0; i < resultTypes.Length; i++)
+            {
+                resultTypes[i] = functype.results->data[i]->kind;
+            }
+
+            _f = f;
             _argTypes = argTypes;
             _resultTypes = resultTypes;
-            _instance = instance;
         }
 
-        public UntypedFunc ToUntypedDelegate()
-        {
-            return new UntypedFunc(Call);
-        }
+        public UntypedFunc ToUntypedDelegate() => new UntypedFunc(Call);
 
-        public unsafe object? Call(params object[] args)
+        public object? Call(params object[] args)
         {
             if (args == null) { throw new ArgumentException(nameof(args)); }
 
@@ -68,10 +50,10 @@ namespace IwasmUnity
             var argValues = stackalloc wasm_val_t[argCount];
             for (int i = 0; i < argCount; i++)
             {
-                argValues[i] = wasm_val_t.From(args[i]);
+                argValues[i] = wasm_val_t.FromObject(args[i]);
             }
             CheckArgs(argValues, argCount);
-            CallUnchecked(argValues, argCount, results, resultCount);
+            CallUnchecked(argValues, (uint)argCount, results, (uint)resultCount);
             if (resultCount == 0)
             {
                 return null;
@@ -102,11 +84,32 @@ namespace IwasmUnity
             }
         }
 
-        private unsafe void CallUnchecked(wasm_val_t* args, int argCount, wasm_val_t* results, int resultCount)
+        private void CallUnchecked(wasm_val_t* args, uint argCount, wasm_val_t* results, uint resultCount)
         {
-            System.Diagnostics.Debug.Assert(argCount == _argTypes.Length);
-            System.Diagnostics.Debug.Assert(resultCount == _resultTypes.Length);
-            Iwasm.WasmRuntimeCallWasm(_instance, _func, (uint)resultCount, results, (uint)argCount, args);
+            var argVec = new wasm_val_vec_t(args, argCount);
+            var resultVec = new wasm_val_vec_t(results, resultCount);
+            var trap = IwasmCApi.wasm_func_call(_f, &argVec, &resultVec);
+            try
+            {
+                if (trap.IsNull == false)
+                {
+                    wasm_byte_vec_t message;
+                    IwasmCApi.wasm_trap_message(trap, &message);
+                    var bytelen = (int)message.num_elems;
+                    var p = message.data;
+                    if (p[bytelen - 1] == (byte)'\0')
+                    {
+                        bytelen--;
+                    }
+                    var messageStr = Encoding.UTF8.GetString(p, bytelen);
+                    IwasmCApi.wasm_byte_vec_delete(&message);
+                    throw new WasmTrapException(messageStr);
+                }
+            }
+            finally
+            {
+                IwasmCApi.wasm_trap_delete(trap);
+            }
         }
 
         private static void Ensure(bool condition, string message)

@@ -1,113 +1,80 @@
 ﻿#nullable enable
 using System;
+using uint32_t = System.UInt32;
 
 namespace IwasmUnity
 {
-    public unsafe sealed class Instance : IDisposable
+    public sealed class Instance : IDisposable
     {
-        private const uint DefaultStackSize = 2u * 1024 * 1024;   // 2MB
-        private const uint DefaultHeapSize = 512u * 1024 * 1024;   // 512MB
-
-        private Module _module;
-        private wasm_module_inst_t _instance;
-
-        // Don't destroy it. Reference only
-        private wasm_exec_env_t _environmentRef;
-
-        internal wasm_module_inst_t InstanceNative => _instance;
-        internal wasm_exec_env_t EnvironmentNative => _environmentRef;
-
-        private Instance(Module module, wasm_module_inst_t instance, wasm_exec_env_t environmentRef)
+        private wasm_instance_t_ptr _instance;
+        private Exports _exports;
+        private Memory? _memory;
+        private bool _isMemoryFetched;
+        public Memory? Memory
         {
-            _module = module;
-            _instance = instance;
-            _environmentRef = environmentRef;
-        }
-
-        public uint GetMemorySize()
-        {
-            return Iwasm.GetMemorySize(_instance);
-        }
-
-        public static Instance Create(Module module, uint stackSize = DefaultStackSize, uint heapSize = DefaultHeapSize)
-        {
-            if (module == null) { throw new ArgumentException(nameof(module)); }
-            module.ThrowIfDisposed();
-
-            var errBuf = NativeErrorHelper.GetErrorBuf();
-            try
+            get
             {
-                wasm_module_inst_t instance;
-                fixed (byte* errBufPtr = errBuf)
+                if (_isMemoryFetched == false)
                 {
-                    instance = Iwasm.wasm_runtime_instantiate(module.ModuleNative, stackSize, heapSize, errBufPtr, (uint)errBuf.Length);
+                    Exports.TryGetMemory(out _memory);
+                    _isMemoryFetched = true;
                 }
-                if (instance.IsNull)
+                return _memory;
+            }
+        }
+
+        internal wasm_instance_t_ptr InstanceNative => _instance;
+        public bool IsDisposed => _instance.IsNull;
+
+        public Exports Exports => _exports;
+
+        internal unsafe Instance(Module module, Imports? imports, uint32_t stackSize, uint32_t heapSize)
+        {
+            if (module.Store.IsDisposed)
+            {
+                throw new ObjectDisposedException(nameof(module.Store));
+            }
+            if (module.IsDisposed)
+            {
+                throw new ObjectDisposedException(nameof(module));
+            }
+
+            wasm_instance_t_ptr instance;
+            if (imports != null)
+            {
+                if (imports.Module != module)
                 {
-                    var message = NativeErrorHelper.GetErrorString(errBuf);
-                    throw new IwasmException(message);
+                    throw new ArgumentException("Invalid imports instance.");
                 }
-                var environment = Iwasm.wasm_runtime_get_exec_env_singleton(instance);
-                return new Instance(module, instance, environment);
+                var externs = imports.GetExterns();
+                fixed (wasm_extern_t_ptr* data = externs)
+                {
+                    var importExternVec = new wasm_extern_vec_t(data, (uint)externs.Length);
+                    instance = IwasmCApi.wasm_instance_new_with_args(module.Store.StoreNative, module.ModuleNative, &importExternVec, null, stackSize, heapSize);
+                }
             }
-            finally
+            else
             {
-                NativeErrorHelper.ReturnErrorBuf(errBuf);
+                var importExternVec = wasm_extern_vec_t.Empty;
+                instance = IwasmCApi.wasm_instance_new_with_args(module.Store.StoreNative, module.ModuleNative, &importExternVec, null, stackSize, heapSize);
             }
-        }
 
-        public void RunWasiStartFunction()
-        {
-            ThrowIfDisposed();
-            var func = Iwasm.wasm_runtime_lookup_wasi_start_function(_instance);
-            Iwasm.WasmRuntimeCallWasm(this, func, 0, null, 0, null);
-        }
-
-        public Function FindFunction(string name)
-        {
-            if (TryFindFunction(name, out var function) == false)
-            {
-                throw new ArgumentException($"function '{name}' is not found.");
-            }
-            return function;
-        }
-
-        public bool TryFindFunction(string name, out Function function)
-        {
-            var instance = _instance;
-            function = null!;
             if (instance.IsNull)
             {
-                return false;
+                throw new ArgumentException("Failed to create an instance.");
             }
-            using (var funcName = UnmanagedBytes.CreateAsciiNullTerminated(name))
-            {
-                var func = Iwasm.wasm_runtime_lookup_function(instance, funcName.AsPointer(), null);
-                if (func.IsNull)
-                {
-                    function = null!;
-                    return false;
-                }
-                function = new Function(this, func);
-                return true;
-            }
+            _instance = instance;
+
+            _exports = new Exports(this);
+            imports?.SetInstance(this);
         }
 
         public void Dispose()
         {
-            if (_instance.IsNull)
-            {
-                return;
-            }
-            Iwasm.wasm_runtime_deinstantiate(_instance);
-            _instance = wasm_module_inst_t.Null;
-        }
-        internal void ThrowIfDisposed()
-        {
-            if (_instance.IsNull)
-            {
-                throw new ObjectDisposedException(nameof(Module));
-            }
+            _exports.DisposeInternal();
+
+            IwasmCApi.wasm_instance_delete(_instance);
+            _instance = wasm_instance_t_ptr.Null;
         }
     }
 }

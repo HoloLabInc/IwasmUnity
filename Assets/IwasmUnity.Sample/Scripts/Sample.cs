@@ -9,103 +9,61 @@ namespace IwasmUnity.Sample
 {
     public sealed class Sample : MonoBehaviour
     {
-        private Module _module;
-        private Instance _instance;
+        private Engine _engine;
+        private Store _store;
 
         [SerializeField]
         private Button _button;
         [SerializeField]
         private Text _text;
 
-        private bool _init;
+        private byte[] _wasm;
 
-        // sample1
-        private byte[] _wasm1;
-
-        // sample2
-        private Func<int, int, int> _add;
+        private void HelloSample()
+        {
+            try
+            {
+                if (_engine == null)
+                {
+                    _engine = new Engine();
+                    _store = new Store(_engine);
+                }
+                using var module = Module.CreateFromWasm(_store, _wasm);
+                var imports = module.CreateImports();
+                imports.ImportAction("env", "hello", context =>
+                {
+                    var now = DateTime.UtcNow.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'");
+                    var message = $"hello from C# ({now})";
+                    Debug.Log(message);
+                    _text.text = message;
+                });
+                using var instance = module.CreateInstance(imports);
+                var run = instance.Exports.GetFunction("run").ToAction();
+                run.Invoke();
+            }
+            catch (Exception ex)
+            {
+                _text.text = ex.ToString();
+                throw;
+            }
+        }
 
         private void Start()
         {
-            if (_button == null)
+            if (_button == null) { return; }
+            _button.interactable = false;
+            StartCoroutine(LoadStreamingAssets("hello.wasm", wasm =>
             {
-                return;
-            }
-
-            var runSample1 = true;
-
-            if (runSample1)
-            {
-                _button.interactable = false;
-                StartCoroutine(LoadStreamingAssets("WasiCsTest.wasm", data =>
-                {
-                    _wasm1 = data;
-                    _button.interactable = true;
-                    _button.onClick.AddListener(() => RunSample1());
-                }));
-            }
-            else
-            {
-                _button.onClick.AddListener(() => RunSample2());
-            }
+                _wasm = wasm;
+                _button.interactable = true;
+                _button.onClick.AddListener(HelloSample);
+            }));
         }
-
-        private void RunSample1()
-        {
-            if (_init == false)
-            {
-                WasmRuntime.Init();
-                _module = Module.LoadWasm(_wasm1);
-                _module.SetWasiArgs(new string[0], new string[] { "hoge" });
-                _instance = Instance.Create(_module);
-            }
-            _text.text = "start wasi main function...";
-            Debug.Log("start wasi main function...");
-            _instance.RunWasiStartFunction();
-            _text.text = "end wasi main function";
-            Debug.Log("end wasi main function");
-        }
-
-        private void RunSample2()
-        {
-            // no wasi
-            // import env.on_message(i32, i32) -> void
-            // export add(i32, i32) -> i32
-
-            if (_init == false)
-            {
-                WasmRuntime.Init();
-                WasmRuntime.ImportAction("env", "on_message", (ImportedContext context, int messageAddr, int messageLen) =>
-                {
-                    var message = context.ReadUtf8(messageAddr, messageLen);
-                    if (_text != null)
-                    {
-                        _text.text = message;
-                    }
-                    Debug.Log(message);
-                });
-
-                var wasm = SampleWasmFile2.GetBytes();
-                _module = Module.LoadWasm(wasm);
-                _instance = Instance.Create(_module);
-                _init = true;
-            }
-
-            var x = UnityEngine.Random.Range(0, 100);
-            var y = UnityEngine.Random.Range(0, 100);
-            _add ??= _instance.FindFunction("add").ToFunc<int, int, int>();
-            var result = _add(x, y);
-            _text.text += $" is {result}";
-            Debug.Log($"result: {result}");
-        }
-
 
         private void OnDestroy()
         {
-            _module?.Dispose();
-            _instance?.Dispose();
-            _module = null;
-            _instance = null;
+            _store?.Dispose();
+            _engine?.Dispose();
         }
 
         private IEnumerator LoadStreamingAssets(string name, Action<byte[]> callback)
