@@ -6,5 +6,12 @@
     "unity": "2020.3",
     "author": {
         "name": "HoloLab Inc."
-    }
+    },
+    "samples": [
+        {
+          "displayName": "IwasmUnity Sample",
+          "description": "A sample scene for IwasmUnity",
+          "path": "Samples~/IwasmUnity.Sample"
+        }
+    ]
 }
