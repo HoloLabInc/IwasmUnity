@@ -76,3 +76,10 @@ crashlytics-build.properties
 .DS_Store
 
 
+# for this repo
+Assets/IwasmUnity/Samples
+Assets/IwasmUnity/Samples.meta
+Assets/StreamingAssets/hello.wat
+Assets/StreamingAssets/hello.wat.meta
+Assets/StreamingAssets/hello.wasm
+Assets/StreamingAssets/hello.wasm.meta

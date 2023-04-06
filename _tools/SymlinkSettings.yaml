@@ -1,0 +1,5 @@
+symlinks:
+
+  # Samples folder
+  - src: ..\Assets\IwasmUnity\Samples~
+    dest: ..\Assets\IwasmUnity\Samples
