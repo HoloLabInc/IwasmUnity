@@ -1,6 +1,6 @@
 {
     "name": "jp.co.hololab.iwasmunity",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "displayName": "IwasmUnity",
     "description": "iwasm C# binding for Unity",
     "unity": "2020.3",

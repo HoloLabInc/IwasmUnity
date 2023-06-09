@@ -9,7 +9,7 @@ Add a following line in your manifest.json.
 ```diff
 {
     "dependencies": {
-+       "jp.co.hololab.iwasmunity": "https://github.com/HoloLabInc/IwasmUnity.git?path=Assets/IwasmUnity#v0.2.0",
++       "jp.co.hololab.iwasmunity": "https://github.com/HoloLabInc/IwasmUnity.git?path=Assets/IwasmUnity#v0.3.0",
         ...
     }
 }
