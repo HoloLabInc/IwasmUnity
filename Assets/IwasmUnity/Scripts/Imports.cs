@@ -135,9 +135,12 @@ namespace IwasmUnity
             {
                 throw new InvalidOperationException("the instance is already created.");
             }
-            if (ImportBuilder.TryBuildImportFunction(moduleName, funcName, _module, import, functype, onInvoke, out var index, out var ext, out var instanceSetter))
+            if (ImportBuilder.TryBuildImportFunction(moduleName, funcName, _module, import, functype, onInvoke, out var indices, out var ext, out var instanceSetter))
             {
-                _externArray[index] = ext;
+                foreach (var index in indices)
+                {
+                    _externArray[index] = ext;
+                }
                 _instanceSetters.Add(instanceSetter);
                 return true;
             }

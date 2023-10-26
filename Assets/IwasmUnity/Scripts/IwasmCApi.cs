@@ -145,7 +145,7 @@ namespace IwasmUnity
         public static extern uint8_t wasm_index_of_export(wasm_instance_t_ptr inst, byte* name, wasm_externkind_t kind, uint32_t* out_index);
 
         [DllImport(DllName, CallingConvention = Cdecl)]
-        public static extern uint8_t wasm_index_of_func_import(wasm_module_t_ptr module, byte* module_name, byte* name, uint32_t* out_index);
+        public static extern uint8_t wasm_index_of_func_import(wasm_module_t_ptr module, byte* module_name, byte* name, uint32_t search_offset, uint32_t* out_index);
 
         [DllImport(DllName, CallingConvention = Cdecl)]
         public static extern uint8_t wasm_count_of_import(wasm_module_t_ptr module, uint32_t* out_count);

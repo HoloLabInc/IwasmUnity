@@ -25,12 +25,12 @@ namespace IwasmUnity
             Delegate import,
             wasm_functype_t_ptr functype,
             Action<ImportInvocationState> onInvoke,
-            out uint index,
+            out uint[] indices,
             out wasm_extern_t_ptr ext,
             out Action<Instance> instanceSetter)
         {
             if (import == null) { throw new ArgumentNullException(nameof(import)); }
-            if (!TryGetImportIndex(module, moduleName, funcName, out index))
+            if (!TryGetImportIndicies(module, moduleName, funcName, out indices))
             {
                 ext = wasm_extern_t_ptr.Null;
                 instanceSetter = null!;
@@ -50,18 +50,25 @@ namespace IwasmUnity
             return true;
         }
 
-        public static bool TryGetImportIndex(Module module, string moduleName, string funcName, out uint32_t index)
+        public static bool TryGetImportIndicies(Module module, string moduleName, string funcName, out uint32_t[] indices)
         {
             using var mn = UnmanagedBytes.CreateAsciiNullTerminated(moduleName);
             using var fn = UnmanagedBytes.CreateAsciiNullTerminated(funcName);
-            uint32_t i = 0;
-            if (IwasmCApi.wasm_index_of_func_import(module.ModuleNative, mn.AsPointer(), fn.AsPointer(), &i) == 0)
+
+            var indiciesList = new System.Collections.Generic.List<uint32_t>();
+            uint32_t searchOffset = 0;
+            while (true)
             {
-                index = 0;
-                return false;
+                uint32_t i = 0;
+                if (IwasmCApi.wasm_index_of_func_import(module.ModuleNative, mn.AsPointer(), fn.AsPointer(), searchOffset, &i) == 0)
+                {
+                    break;
+                }
+                indiciesList.Add(i);
+                searchOffset = i + 1;
             }
-            index = i;
-            return true;
+            indices = indiciesList.ToArray();
+            return indices.Length > 0;
         }
 
         internal sealed class ImportedData
