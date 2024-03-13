@@ -15,7 +15,7 @@ namespace IwasmUnity
     {
         private const CallingConvention Cdecl = CallingConvention.Cdecl;
         private const string DllName =
-#if UNITY_IOS && ENABLE_IL2CPP && !UNITY_EDITOR
+#if (UNITY_IOS || UNITY_VISIONOS) && ENABLE_IL2CPP && !UNITY_EDITOR
             "__Internal";
 #else
             "iwasm";
